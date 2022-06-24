@@ -24,18 +24,23 @@ class _PopupContainerState extends State<PopupContainer> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
 
+    final close = Navigator.of(context).pop;
+
     return Consumer<ScreenManager>(
       builder: (context, manager, child) => Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-            child: Container(
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
+          GestureDetector(
+            onTap: close,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+              child: Container(
+                decoration: BoxDecoration(color: Colors.white.withOpacity(0.0)),
+              ),
             ),
           ),
           Container(
-            height: height * 0.8,
+            height: height * 0.86,
             width: double.infinity,
             padding: const EdgeInsets.all(32),
             decoration: const BoxDecoration(
@@ -53,16 +58,22 @@ class _PopupContainerState extends State<PopupContainer> {
               ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    primary: Colors.transparent,
-                    shadowColor: Colors.transparent,
+                Container(
+                  padding: EdgeInsets.zero,
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minimumSize: Size.zero,
+                      padding: EdgeInsets.zero,
+                      primary: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                    ),
+                    onPressed: close,
+                    child: SvgPicture.asset('assets/close.svg'),
                   ),
-                  onPressed: () => manager.closePopup(),
-                  child: SvgPicture.asset('assets/close.svg'),
                 ),
                 widget.child ?? const SizedBox.shrink(),
               ],

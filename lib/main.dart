@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_list_app/components/screens/new_product_popup.dart';
 import 'package:shopping_list_app/database/database.dart';
 
 // States
@@ -45,6 +46,11 @@ class MyApp extends StatelessWidget {
           fontWeight: FontWeight.w600,
           color: Color.fromRGBO(33, 51, 67, 1),
         ),
+        headline2: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Color.fromRGBO(33, 51, 67, 1),
+        ),
         subtitle1: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.normal,
@@ -59,16 +65,45 @@ class MyApp extends StatelessWidget {
     DatabaseHelper.initDb();
 
     return Consumer<ScreenManager>(
-      builder: (context, screenManager, child) => MaterialApp(
-        title: _title,
-        theme: _customTheme(),
-        home: Stack(
-          alignment: Alignment.bottomCenter,
-          children: <Widget>[
-            screenManager.currentScreen,
-            screenManager.currentPopup,
-          ],
+      builder: (context, screenManager, child) => Material(
+        child: Material(
+          child: MaterialApp(
+            title: _title,
+            theme: _customTheme(),
+            home: Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                screenManager.currentScreen,
+                const TemporaryWidget(),
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class TemporaryWidget extends StatelessWidget {
+  const TemporaryWidget({Key? key}) : super(key: key);
+
+  static Route<Object?> _routeBuilder(BuildContext context, Object? arguments) {
+    return RawDialogRoute(
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return const NewProductPopup();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.of(context).restorablePush(_routeBuilder);
+        },
+        child: const Text('Open dialog'),
       ),
     );
   }
