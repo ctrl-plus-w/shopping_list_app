@@ -1,7 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 
 // Modules
 import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart';

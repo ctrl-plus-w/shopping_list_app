@@ -8,12 +8,12 @@ import 'package:shopping_list_app/states/screen_manager.dart';
 void main() {
   runApp(ChangeNotifierProvider(
     create: (context) => ScreenManager(),
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   static const String _title = "Shopping List App";
 
