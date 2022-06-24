@@ -1,23 +1,60 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_list_app/components/elements/product.dart';
+import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 // Modules
 import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart';
+import 'package:shopping_list_app/components/modules/product_category.dart';
 
 // Elements
 import 'package:shopping_list_app/components/elements/docked_button.dart';
-import 'package:shopping_list_app/components/modules/product_category.dart';
+import 'package:shopping_list_app/components/elements/product.dart';
+
+// Database
+import 'package:shopping_list_app/database/database.dart';
+import 'package:shopping_list_app/database/models/cart/cart.dart';
 
 // States
 import 'package:shopping_list_app/states/screen_manager.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Cart? cart;
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    DatabaseHelper.database.whenComplete(() async {
+      final currentCart = await Cart.getOrCreateCurrent();
+
+      setState(() {
+        cart = currentCart;
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Container(
+          padding: const EdgeInsets.all(16),
+          child: const Text("Loading..."),
+        ),
+      );
+    }
+
     final theme = Theme.of(context);
 
     // TODO : Make the SettingsButton shadow. (Also maybe make this button a component.)
