@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 // Screens
-import 'package:shopping_list_app/components/screens/archived_lists_screen.dart';
-import 'package:shopping_list_app/components/screens/home_screen.dart';
 import 'package:shopping_list_app/components/screens/favorite_products_screen.dart';
+import 'package:shopping_list_app/components/screens/archived_lists_screen.dart';
 import 'package:shopping_list_app/components/screens/new_product_popup.dart';
 import 'package:shopping_list_app/components/screens/recipes_screen.dart';
+import 'package:shopping_list_app/components/screens/home_screen.dart';
 
 enum ScreensName {
   homeScreen,
@@ -39,18 +39,21 @@ class ScreenManager extends ChangeNotifier {
   get currentScreen => screens[screenName];
   get currentPopup => (popups[popupName] ?? Container());
 
+  /// Open the given popup.
   void openPopup(PopupsName newPopupName) {
     popupName = newPopupName;
 
     notifyListeners();
   }
 
+  /// Closes the current popup.
   void closePopup() {
     popupName = null;
 
     notifyListeners();
   }
 
+  /// Change the screen.
   void setScreen(ScreensName newScreenName) {
     screenName = newScreenName;
 
