@@ -37,6 +37,9 @@ dependencies:
   iconly: ^1.0.1
   flutter_svg: ^1.1.0
   provider: ^6.0.0
+  slugify: ^2.0.0
+  sqflite:
+  path:
 
 dev_dependencies:
   flutter_test:
