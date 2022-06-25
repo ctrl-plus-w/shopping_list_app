@@ -40,9 +40,9 @@ Future<void> _onUpgrade(
     await dropRecipeTable(database); // ! Priority = 3
     await dropCartTable(database); // ! Priority = 3
     await dropUnitTable(database); // ! Priority = 3
-  }
 
-  await _onCreate(database, newVersion);
+    await _onCreate(database, newVersion);
+  }
 }
 
 class DatabaseHelper {
@@ -57,7 +57,7 @@ class DatabaseHelper {
       join(await getDatabasesPath(), "shopping_list_database.db"),
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
-      version: 2,
+      version: 1,
     );
 
     return _database as Future<Database>;
