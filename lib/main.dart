@@ -57,6 +57,43 @@ class MyApp extends StatelessWidget {
           color: Color.fromRGBO(107, 121, 134, 1),
         ),
       ),
+      inputDecorationTheme: const InputDecorationTheme(
+        // Border
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          borderSide: BorderSide(
+            color: Color.fromRGBO(187, 195, 208, 1),
+            width: 0.2,
+          ),
+        ),
+
+        // Hint
+        hintStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: Color.fromRGBO(107, 121, 134, 1),
+        ),
+
+        // Paddding
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 12,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          primary: const Color.fromRGBO(33, 51, 67, 1),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shadowColor: Colors.transparent,
+        ),
+      ),
     );
   }
 
