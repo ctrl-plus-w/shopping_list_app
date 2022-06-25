@@ -25,7 +25,6 @@ class NewProductPopup extends StatefulWidget {
 class _NewProductPopupState extends State<NewProductPopup> {
   // final States _state = States.general;
 
-  final _formKey = GlobalKey<FormState>();
 
   List<Unit> _units = <Unit>[];
   bool _isLoading = true;
@@ -53,8 +52,6 @@ class _NewProductPopupState extends State<NewProductPopup> {
 
     final theme = Theme.of(context);
 
-    const TextStyle formInputTextStyle = TextStyle(fontSize: 14);
-
     // TODO : Only the first part of the form is made. Make the others ones and handle switching.
 
     return PopupContainer(
@@ -68,96 +65,124 @@ class _NewProductPopupState extends State<NewProductPopup> {
             Text("Ajouter un nouveau produit.",
                 style: theme.textTheme.subtitle1),
             const SizedBox(height: 29),
+            GeneralStepFormCategory(units: _units),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-            // TODO : Make TextFormFields validators.
+class FavoriteStepFormCategory extends StatelessWidget {
+  const FavoriteStepFormCategory({Key? key}) : super(key: key);
 
-            // General Form
-            Form(
-              key: _formKey,
-              child: Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Product Name Input Field
-                    Text("Nom du produit", style: theme.textTheme.bodyText1),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      keyboardType: TextInputType.text,
-                      style:
-                          theme.textTheme.bodyText1!.merge(formInputTextStyle),
-                      decoration: const InputDecoration(hintText: "Tomates")
-                          .applyDefaults(theme.inputDecorationTheme),
-                    ),
-                    const SizedBox(height: 16),
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
+  }
+}
 
-                    // Quantity Input Field
-                    Text("Quantité", style: theme.textTheme.bodyText1),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Flexible(
-                          // TODO : Make the TextFormField a number input.
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            style: theme.textTheme.bodyText1!
-                                .merge(formInputTextStyle),
-                            decoration: const InputDecoration(
-                              hintText: "0",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(3),
-                                  bottomLeft: Radius.circular(3),
-                                ),
-                              ),
-                            ).applyDefaults(theme.inputDecorationTheme),
-                          ),
-                        ),
-                        Flexible(
-                          child: DropdownButtonFormField<String>(
-                            style: theme.textTheme.bodyText1!
-                                .merge(formInputTextStyle),
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 7, horizontal: 12),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(3),
-                                  bottomRight: Radius.circular(3),
-                                ),
-                              ),
-                            ).applyDefaults(theme.inputDecorationTheme),
-                            value: _units[0].name,
-                            items: _units
-                                .map((unit) => DropdownMenuItem<String>(
-                                      value: unit.slug,
-                                      child: Text(unit.name),
-                                    ))
-                                .toList(),
-                            onChanged: (String? value) {
-                              // TODO : Handle the change ? What should be done ?
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+class CategoryStepFormCategory extends StatelessWidget {
+  const CategoryStepFormCategory({Key? key}) : super(key: key);
 
-                    // Space
-                    const Spacer(),
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
+  }
+}
 
-                    // Next Step Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO : Handle the data.
-                        },
-                        child: const Text('Choisir la catégorie'),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+class GeneralStepFormCategory extends StatelessWidget {
+  final formKey = GlobalKey<FormState>();
+  final List<Unit> units;
+
+  GeneralStepFormCategory({Key? key, required this.units}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    const TextStyle formInputTextStyle = TextStyle(fontSize: 14);
+
+    final theme = Theme.of(context);
+
+    // TODO : Make TextFormFields validators.
+    return Form(
+      key: formKey,
+      child: Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product Name Input Field
+            Text("Nom du produit", style: theme.textTheme.bodyText1),
+            const SizedBox(height: 8),
+            TextFormField(
+              keyboardType: TextInputType.text,
+              style: theme.textTheme.bodyText1!.merge(formInputTextStyle),
+              decoration: const InputDecoration(hintText: "Tomates")
+                  .applyDefaults(theme.inputDecorationTheme),
             ),
+            const SizedBox(height: 16),
+
+            // Quantity Input Field
+            Text("Quantité", style: theme.textTheme.bodyText1),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Flexible(
+                  // TODO : Make the TextFormField a number input.
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    style: theme.textTheme.bodyText1!.merge(formInputTextStyle),
+                    decoration: const InputDecoration(
+                      hintText: "0",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(3),
+                          bottomLeft: Radius.circular(3),
+                        ),
+                      ),
+                    ).applyDefaults(theme.inputDecorationTheme),
+                  ),
+                ),
+                Flexible(
+                  child: DropdownButtonFormField<String>(
+                    style: theme.textTheme.bodyText1!.merge(formInputTextStyle),
+                    decoration: const InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(3),
+                          bottomRight: Radius.circular(3),
+                        ),
+                      ),
+                    ).applyDefaults(theme.inputDecorationTheme),
+                    value: units[0].name,
+                    items: units
+                        .map((unit) => DropdownMenuItem<String>(
+                              value: unit.slug,
+                              child: Text(unit.name),
+                            ))
+                        .toList(),
+                    onChanged: (String? value) {
+                      // TODO : Handle the change ? What should be done ?
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            // Space
+            const Spacer(),
+
+            // Next Step Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO : Handle the data.
+                },
+                child: const Text('Choisir la catégorie'),
+              ),
+            )
           ],
         ),
       ),
