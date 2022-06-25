@@ -14,6 +14,7 @@ class Unit {
     this.id,
     required this.name,
   });
+
   static List<Unit> fromList(List<String> units) {
     return List.generate(units.length, (index) => Unit(name: units[index]));
   }
@@ -30,6 +31,23 @@ class Unit {
 
     await database.insert(_tableName, toMap());
   }
+
+  /// Retrieve all the units.
+  static Future<List<Unit>> getAll() async {
+    final database = await DatabaseHelper.database;
+
+    List<Map<String, dynamic>> res = await database.query(
+      _tableName,
+      columns: ['id', 'name'],
+    );
+
+    return res
+        .map((unit) => Unit(
+              id: unit['id'],
+              name: unit['name'],
+            ))
+        .toList();
+  }
 }
 
 Future<void> seedUnitTable(Database database) async {
@@ -41,7 +59,8 @@ Future<void> seedUnitTable(Database database) async {
 }
 
 Future<void> createUnitTable(Database database) async {
-  await database.execute("""
+  await database.execute(
+      """
       CREATE TABLE $_tableName (
         id INTEGER PRIMARY KEY,
         slug VARCHAR(50) NOT NULL,
