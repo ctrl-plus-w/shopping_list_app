@@ -30,9 +30,14 @@ class _DockedButtonState extends State<DockedButton> {
         ),
         width: 60.0,
         height: 60.0,
-        child: MaterialButton(
-          onPressed: () {},
-          child: SvgPicture.asset("assets/add.svg"),
+        child: Align(
+          child: SizedBox(
+            width: 26,
+            height: 26,
+            child: SvgPicture.asset(
+              "assets/add.svg",
+            ),
+          ),
         ),
       ),
       onPressed: () {},
