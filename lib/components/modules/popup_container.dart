@@ -43,13 +43,13 @@ class _PopupContainerState extends State<PopupContainer> {
             height: height * 0.86,
             width: double.infinity,
             padding: const EdgeInsets.all(32),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   blurRadius: 37,
                   spreadRadius: 0,
