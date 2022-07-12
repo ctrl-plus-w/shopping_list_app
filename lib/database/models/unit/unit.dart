@@ -5,8 +5,8 @@ import 'package:sqflite/sqflite.dart';
 const _tableName = "Unit";
 
 class Unit {
-  final int? id;
-  final String name;
+  late int? id;
+  late String name;
 
   String get slug => slugify(name);
 
@@ -14,6 +14,12 @@ class Unit {
     this.id,
     required this.name,
   });
+
+  Unit.fromMap(Map<String, Object?> map) {
+    if (map['id'] != null) id = int.tryParse(map['id'] as String);
+
+    name = map['name'] as String;
+  }
 
   static List<Unit> fromList(List<String> units) {
     return List.generate(units.length, (index) => Unit(name: units[index]));
@@ -59,8 +65,7 @@ Future<void> seedUnitTable(Database database) async {
 }
 
 Future<void> createUnitTable(Database database) async {
-  await database.execute(
-      """
+  await database.execute("""
       CREATE TABLE $_tableName (
         id INTEGER PRIMARY KEY,
         slug VARCHAR(50) NOT NULL,
