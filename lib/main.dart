@@ -23,14 +23,22 @@ class MyApp extends StatelessWidget {
       backgroundColor: const Color.fromRGBO(250, 252, 255, 1),
       fontFamily: "Sora",
       textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          backgroundColor:
-              MaterialStateProperty.all(const Color.fromRGBO(33, 51, 67, 1)),
-          padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 4, horizontal: 12)),
-          shape: MaterialStateProperty.all(
-            const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(3)),
+        style: TextButton.styleFrom(
+          primary: const Color.fromRGBO(107, 121, 134, 1),
+        ).merge(
+          ButtonStyle(
+            textStyle: MaterialStateProperty.all(const TextStyle(
+              fontFamily: 'Sora',
+              fontSize: 16,
+              color: Color.fromRGBO(107, 121, 134, 1),
+            )),
+            backgroundColor: MaterialStateProperty.all(Colors.transparent),
+            padding: MaterialStateProperty.all(
+                const EdgeInsets.symmetric(vertical: 4, horizontal: 12)),
+            shape: MaterialStateProperty.all(
+              const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(3)),
+              ),
             ),
           ),
         ),
@@ -58,8 +66,20 @@ class MyApp extends StatelessWidget {
         ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
+        // Color
+        filled: true,
+        fillColor: Colors.white,
+
         // Border
         border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          borderSide: BorderSide(
+            color: Color.fromRGBO(187, 195, 208, 1),
+            width: 0.2,
+          ),
+        ),
+
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(3)),
           borderSide: BorderSide(
             color: Color.fromRGBO(187, 195, 208, 1),
@@ -87,6 +107,7 @@ class MyApp extends StatelessWidget {
           primary: const Color.fromRGBO(33, 51, 67, 1),
           textStyle: const TextStyle(
             fontSize: 16,
+            fontFamily: 'Sora',
             fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
