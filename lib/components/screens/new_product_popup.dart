@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +26,9 @@ enum States {
   favorite,
 }
 
+// TODO : When loading a section of the popup, if there is some stored values in the shared preferences, set them as the values of the field.
+// TODO : Reset all the fields after creating the product in the db.
+
 class NewProductPopup extends StatefulWidget {
   const NewProductPopup({Key? key}) : super(key: key);
 
@@ -47,6 +48,18 @@ class NavigationAutomata {
 
     if (state == States.category) {
       return const NavigationAutomata(States.favorite);
+    }
+
+    return null;
+  }
+
+  NavigationAutomata? previous() {
+    if (state == States.favorite) {
+      return const NavigationAutomata(States.category);
+    }
+
+    if (state == States.category) {
+      return const NavigationAutomata(States.general);
     }
 
     return null;
@@ -86,7 +99,15 @@ class _NewProductPopupState extends State<NewProductPopup> {
     }
   }
 
-  void setPreviousState() {}
+  void setPreviousState() {
+    NavigationAutomata? previousState = _state.previous();
+
+    if (previousState != null) {
+      setState(() {
+        _state = previousState;
+      });
+    }
+  }
 
   void submit() async {
     final prefs = await SharedPreferences.getInstance();
@@ -119,7 +140,7 @@ class _NewProductPopupState extends State<NewProductPopup> {
     // Handling all the saved fields of the FAVORITE SECTION
     getPropName = prefPropNameGetter(pagePrefPrefix, favoritePrefPrefix);
 
-    final bool? is_favorite = prefs.getBool(getPropName("enabled"));
+    final bool? isFavorite = prefs.getBool(getPropName("enabled"));
 
     // Handling all the data and creating the product
     // TODO : Create the product in the database.
