@@ -15,6 +15,9 @@ class SearchInput<T> extends StatefulWidget {
   /// Form field controller
   final TextEditingController controller;
 
+  /// Selected value controller
+  final TextEditingController valueController;
+
   /// Error message used when the user tries to add an element with the field
   /// empty
   final String emptyErrorMessage;
@@ -41,6 +44,7 @@ class SearchInput<T> extends StatefulWidget {
     required this.formKey,
     required this.data,
     required this.controller,
+    required this.valueController,
     required this.emptyErrorMessage,
     required this.duplicationErrorMessage,
     required this.getSlug,
@@ -180,7 +184,8 @@ class _SearchInputState<T> extends State<SearchInput> {
                 ),
               ],
             ),
-            child: Expanded(
+            child: SizedBox(
+              width: double.infinity,
               child: MediaQuery.removePadding(
                 context: context,
                 removeTop: true,
@@ -197,6 +202,7 @@ class _SearchInputState<T> extends State<SearchInput> {
                         if (!isSelected) {
                           setState(() {
                             _selectedElementId = widget.getId(element);
+                            widget.valueController.text =widget.getLabel(element);
                           });
                         }
                       },
@@ -232,4 +238,3 @@ class _SearchInputState<T> extends State<SearchInput> {
     );
   }
 }
- 
