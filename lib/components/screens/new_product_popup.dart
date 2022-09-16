@@ -117,8 +117,8 @@ class _NewProductPopupState extends State<NewProductPopup> {
         prefPropNameGetter(pagePrefPrefix, generalPrefPrefix);
 
     final String? productName = prefs.getString(getPropName("name"));
-    final String? quantity = prefs.getString(getPropName("quantity"));
-    final num? quantityType = prefs.getInt(getPropName("quantity_type"));
+    final String? quantityType = prefs.getString(getPropName("quantity_type"));
+    final num? quantity = prefs.getInt(getPropName("quantity"));
 
     if (productName == null || quantityType == null || quantity == null) {
       setState(() => _state = const NavigationAutomata(States.category));
