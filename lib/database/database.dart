@@ -57,7 +57,7 @@ class DatabaseHelper {
       join(await getDatabasesPath(), "shopping_list_database.db"),
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
-      version: 1,
+      version: 2,
     );
 
     return _database as Future<Database>;
