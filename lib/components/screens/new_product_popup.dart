@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,7 +165,10 @@ class _NewProductPopupState extends State<NewProductPopup> {
     );
 
     await createProduct(database, product);
-    // TODO : Close the popup (And update the global states of the products ???)
+
+    // Because the func is async, we need to check if the component is mounted before calling the Navigator.
+    if (!mounted) return;
+    Navigator.of(context).pop();
   }
 
   @override
