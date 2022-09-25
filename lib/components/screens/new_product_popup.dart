@@ -27,9 +27,6 @@ enum States {
   favorite,
 }
 
-// TODO : When loading a section of the popup, if there is some stored values in the shared preferences, set them as the values of the field.
-// TODO : Reset all the fields after creating the product in the db.
-
 class NewProductPopup extends StatefulWidget {
   const NewProductPopup({Key? key}) : super(key: key);
 
@@ -165,6 +162,9 @@ class _NewProductPopupState extends State<NewProductPopup> {
     );
 
     await createProduct(database, product);
+
+    // Clear the shared prefs
+    prefs.clear();
 
     // Because the func is async, we need to check if the component is mounted before calling the Navigator.
     if (!mounted) return;
@@ -379,36 +379,71 @@ class _CategoryStepFormCategoryState extends State<CategoryStepFormCategory> {
   }
 }
 
-class GeneralStepFormCategory extends StatelessWidget {
-  final getPrefPropName = prefPropNameGetter(pagePrefPrefix, generalPrefPrefix);
-
-  final _formKey = GlobalKey<FormState>();
+class GeneralStepFormCategory extends StatefulWidget {
   final void Function() setNextState;
   final void Function() setPreviousState;
   final List<Unit> units;
 
-  late final String defaultUnit;
-
-  GeneralStepFormCategory({
+  const GeneralStepFormCategory({
     Key? key,
     required this.units,
     required this.setNextState,
     required this.setPreviousState,
-  }) : super(key: key) {
-    defaultUnit = units[0].name;
+  }) : super(key: key);
+
+  @override
+  State<GeneralStepFormCategory> createState() =>
+      _GeneralStepFormCategoryState();
+}
+
+class _GeneralStepFormCategoryState extends State<GeneralStepFormCategory> {
+  final getPrefPropName = prefPropNameGetter(pagePrefPrefix, generalPrefPrefix);
+
+  late String defaultUnit;
+
+  final _formKey = GlobalKey<FormState>();
+
+  // Input
+  late TextEditingController nameInputController;
+  late TextEditingController quantityInputController;
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final prefs = await SharedPreferences.getInstance();
+
+      setState(() {
+        nameInputController = TextEditingController(
+          text: prefs.getString(getPrefPropName('name')),
+        );
+
+        quantityInputController = TextEditingController(
+            text: prefs.getInt(getPrefPropName('quantity')).toString());
+
+        final quantityType = prefs.getString(getPrefPropName('quantity_type'));
+        defaultUnit = quantityType ?? widget.units[0].name;
+
+        _isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     const TextStyle formInputTextStyle = TextStyle(fontSize: 14);
 
-    // Input
-    TextEditingController nameInputController = TextEditingController();
-    TextEditingController quantityInputController = TextEditingController();
-
     String quantityType = defaultUnit;
 
     final theme = Theme.of(context);
+
+    if (_isLoading) {
+      // TODO : When loading, show the skeleton instead of the shrinked box.
+      return const SizedBox.shrink();
+    }
 
     return Form(
       key: _formKey,
@@ -509,7 +544,7 @@ class GeneralStepFormCategory extends StatelessWidget {
                         ),
                       ).applyDefaults(theme.inputDecorationTheme),
                       value: defaultUnit,
-                      items: units
+                      items: widget.units
                           .map((unit) => DropdownMenuItem<String>(
                                 value: unit.slug,
                                 child: Text(unit.name),
@@ -553,7 +588,7 @@ class GeneralStepFormCategory extends StatelessWidget {
                       quantityType,
                     );
 
-                    setNextState();
+                    widget.setNextState();
                   }
                 },
                 child: const Text('Choisir la catégorie'),
