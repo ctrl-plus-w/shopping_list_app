@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +11,7 @@ import 'package:shopping_list_app/components/modules/search_input.dart';
 // Database
 import 'package:shopping_list_app/database/database.dart';
 import 'package:shopping_list_app/database/models/category/category.dart';
+import 'package:shopping_list_app/database/models/product/product.dart';
 
 // Models
 import 'package:shopping_list_app/database/models/unit/unit.dart';
@@ -109,7 +112,13 @@ class _NewProductPopupState extends State<NewProductPopup> {
     }
   }
 
+  void goToState(States state) {
+    setState(() => _state = NavigationAutomata(state));
+  }
+
   void submit() async {
+    final database = await DatabaseHelper.database;
+
     final prefs = await SharedPreferences.getInstance();
 
     // Handling all the saved fields of the GENERAL SECTION
@@ -118,10 +127,10 @@ class _NewProductPopupState extends State<NewProductPopup> {
 
     final String? productName = prefs.getString(getPropName("name"));
     final String? quantityType = prefs.getString(getPropName("quantity_type"));
-    final num? quantity = prefs.getInt(getPropName("quantity"));
+    final int? quantity = prefs.getInt(getPropName("quantity"));
 
     if (productName == null || quantityType == null || quantity == null) {
-      setState(() => _state = const NavigationAutomata(States.category));
+      goToState(States.category);
 
       return;
     }
@@ -140,10 +149,25 @@ class _NewProductPopupState extends State<NewProductPopup> {
     // Handling all the saved fields of the FAVORITE SECTION
     getPropName = prefPropNameGetter(pagePrefPrefix, favoritePrefPrefix);
 
-    final bool? isFavorite = prefs.getBool(getPropName("enabled"));
+    final bool isFavorite = prefs.getBool(getPropName("enabled")) ?? false;
 
     // Handling all the data and creating the product
-    // TODO : Create the product in the database.
+    final unit = await Unit.getByName(quantityType);
+    if (unit == null) {
+      goToState(States.category);
+
+      return;
+    }
+
+    final product = Product(
+      name: productName,
+      quantity: quantity,
+      unit: unit,
+      favorite: isFavorite,
+    );
+
+    await createProduct(database, product);
+    // TODO : Close the popup (And update the global states of the products ???)
   }
 
   @override
