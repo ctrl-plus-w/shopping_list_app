@@ -143,6 +143,8 @@ class _SearchInputState<T> extends State<SearchInput> {
                       String label = widget.controller.text;
                       T element = await widget.addElement(label);
 
+                      widget.valueController.text = widget.getLabel(element);
+
                       setState(() {
                         _additionalData = [..._additionalData, element];
                         _selectedElementId = widget.getId(element);
@@ -202,7 +204,8 @@ class _SearchInputState<T> extends State<SearchInput> {
                         if (!isSelected) {
                           setState(() {
                             _selectedElementId = widget.getId(element);
-                            widget.valueController.text =widget.getLabel(element);
+                            widget.valueController.text =
+                                widget.getLabel(element);
                           });
                         }
                       },
