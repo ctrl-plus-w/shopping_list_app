@@ -1,16 +1,12 @@
-# shopping_list_app
+# Shopping List Application
 
-A new Flutter project.
+Brief description...
 
-## Getting Started
+# Help & Tutorials
 
-This project is a starting point for a Flutter application.
+## How to use ADB to view the SQLite DB
 
-A few resources to get you started if this is your first Flutter project:
+https://stackoverflow.com/questions/18370219/how-to-use-adb-in-android-studio-to-view-an-sqlite-db  
+Note that the android package name is `com.example.<your_project_name>`.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The `platform-tools` folder might be in the following path : `C:\Users\<USER>\AppData\Local\Android\Sdk\platform-tools`.
