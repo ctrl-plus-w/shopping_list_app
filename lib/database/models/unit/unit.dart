@@ -38,6 +38,23 @@ class Unit {
     await database.insert(_tableName, toMap());
   }
 
+  static Future<Unit?> getByName(String name) async {
+    final database = await DatabaseHelper.database;
+
+    List<Map<String, dynamic>> units = await database.query(
+      _tableName,
+      columns: ['id', 'name'],
+      where: 'name = "$name"',
+    );
+
+    if (units.isNotEmpty) {
+      final unit = units[0];
+      return Unit(name: unit['name'], id: unit['id']);
+    }
+
+    return null;
+  }
+
   /// Retrieve all the units.
   static Future<List<Unit>> getAll() async {
     final database = await DatabaseHelper.database;
