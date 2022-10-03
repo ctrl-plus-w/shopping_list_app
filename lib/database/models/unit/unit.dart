@@ -94,3 +94,7 @@ Future<void> createUnitTable(Database database) async {
 Future<void> dropUnitTable(Database database) async {
   await DatabaseHelper.dropTable(database, _tableName);
 }
+
+String getTableName() {
+  return _tableName;
+}
