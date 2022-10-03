@@ -75,7 +75,6 @@ class _ProductState extends State<Product> {
                   ? TextDecoration.lineThrough
                   : TextDecoration.none,
               color: const Color.fromRGBO(33, 51, 67, 1).withOpacity(opacity),
-              // TODO : Check if the color is well applied.
             ),
           ),
         ),

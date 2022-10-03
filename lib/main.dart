@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_list_app/components/elements/docked_button.dart';
+import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart';
 import 'package:shopping_list_app/components/screens/new_product_popup.dart';
 import 'package:shopping_list_app/database/database.dart';
 
@@ -23,22 +25,19 @@ class MyApp extends StatelessWidget {
       backgroundColor: const Color.fromRGBO(250, 252, 255, 1),
       fontFamily: "Sora",
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          backgroundColor: const Color.fromRGBO(107, 121, 134, 1),
-        ).merge(
-          ButtonStyle(
-            textStyle: MaterialStateProperty.all(const TextStyle(
-              fontFamily: 'Sora',
-              fontSize: 16,
-              color: Color.fromRGBO(107, 121, 134, 1),
-            )),
-            backgroundColor: MaterialStateProperty.all(Colors.transparent),
-            padding: MaterialStateProperty.all(
-                const EdgeInsets.symmetric(vertical: 4, horizontal: 12)),
-            shape: MaterialStateProperty.all(
-              const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(3)),
-              ),
+        style: ButtonStyle(
+          foregroundColor:
+              MaterialStateProperty.all(const Color.fromRGBO(107, 121, 134, 1)),
+          textStyle: MaterialStateProperty.all(const TextStyle(
+            fontFamily: 'Sora',
+            fontSize: 16,
+          )),
+          backgroundColor: MaterialStateProperty.all(Colors.transparent),
+          padding: MaterialStateProperty.all(
+              const EdgeInsets.symmetric(vertical: 4, horizontal: 12)),
+          shape: MaterialStateProperty.all(
+            const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(3)),
             ),
           ),
         ),
@@ -131,7 +130,13 @@ class MyApp extends StatelessWidget {
             home: Stack(
               alignment: Alignment.bottomCenter,
               children: <Widget>[
-                screenManager.currentScreen,
+                Scaffold(
+                  body: screenManager.currentScreen,
+                  bottomNavigationBar: const BottomNavigation(),
+                  floatingActionButton: const DockedButton(),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.centerDocked,
+                ),
                 const TemporaryWidget(),
               ],
             ),

@@ -61,7 +61,6 @@ class BottomNavigationPainter extends CustomPainter {
 }
 
 class BottomNavigationState extends State<BottomNavigation> {
-  // TODO : Prevent the Middle button from getting up with the keyboard.
   @override
   Widget build(BuildContext context) {
     return Consumer<ScreenManager>(

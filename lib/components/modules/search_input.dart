@@ -91,16 +91,16 @@ class _SearchInputState<T> extends State<SearchInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// ? Label
+        // Label
         Text(
           widget.label,
           style: theme.textTheme.bodyText1!.copyWith(fontSize: 14),
         ),
 
-        /// ? Separator
+        // Separator
         const SizedBox(height: 8),
 
-        /// ? Main Form Field
+        // Main Form Field
         Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -151,7 +151,10 @@ class _SearchInputState<T> extends State<SearchInput> {
                       });
 
                       widget.controller.clear();
-                      // TODO : Unfocus the input field.
+
+                      if (mounted) {
+                        FocusScope.of(context).unfocus();
+                      }
                     } catch (error) {
                       setState(() {
                         _inputError = error.toString();
