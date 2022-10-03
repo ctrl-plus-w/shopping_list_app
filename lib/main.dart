@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// Elements
 import 'package:shopping_list_app/components/elements/docked_button.dart';
-import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart';
+
+// Database
 import 'package:shopping_list_app/database/database.dart';
+import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart';
 
 // States
+import 'package:shopping_list_app/states/cart_manager.dart';
 import 'package:shopping_list_app/states/screen_manager.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => ScreenManager(),
-    child: const MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ScreenManager()),
+        ChangeNotifierProvider(create: (context) => CartManager()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

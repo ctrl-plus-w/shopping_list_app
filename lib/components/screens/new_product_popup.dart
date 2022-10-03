@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Modules
@@ -15,6 +16,7 @@ import 'package:shopping_list_app/database/models/product/product.dart';
 // Models
 import 'package:shopping_list_app/database/models/unit/unit.dart';
 import 'package:shopping_list_app/helpers/preferences.dart';
+import 'package:shopping_list_app/states/cart_manager.dart';
 import 'package:slugify/slugify.dart';
 
 const String pagePrefPrefix = "new_produt_page";
@@ -112,7 +114,7 @@ class _NewProductPopupState extends State<NewProductPopup> {
     setState(() => _state = NavigationAutomata(state));
   }
 
-  void submit() async {
+  Future<void> submit() async {
     final prefs = await SharedPreferences.getInstance();
 
     // Handling all the saved fields of the GENERAL SECTION
@@ -225,7 +227,8 @@ class FavoriteStepFormCategory extends StatelessWidget {
 
   final void Function() setNextState;
   final void Function() setPreviousState;
-  final void Function() submit;
+
+  final Future<void> Function() submit;
 
   FavoriteStepFormCategory({
     Key? key,
@@ -238,45 +241,50 @@ class FavoriteStepFormCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Voulez vous ajouter le produit aux favoris ?",
-                  style: theme.textTheme.subtitle1,
-                  textAlign: TextAlign.center,
-                ),
-                SvgPicture.asset('assets/favorite_illustration.svg'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        submit();
-                      },
-                      child: const Text('Non merci.'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final prefs = await SharedPreferences.getInstance();
+    return Consumer<CartManager>(
+      builder: (context, cartManager, child) => Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Voulez vous ajouter le produit aux favoris ?",
+                    style: theme.textTheme.subtitle1,
+                    textAlign: TextAlign.center,
+                  ),
+                  SvgPicture.asset('assets/favorite_illustration.svg'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          submit();
+                        },
+                        child: const Text('Non merci.'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
 
-                        await prefs.setBool(getPropName('enabled'), true);
-                        submit();
-                      },
-                      child: const Text('Oui l\'ajouter !'),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          )
-        ],
+                          await prefs.setBool(getPropName('enabled'), true);
+
+                          await submit();
+
+                          await cartManager.updateProducts();
+                        },
+                        child: const Text('Oui l\'ajouter !'),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

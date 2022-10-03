@@ -9,8 +9,7 @@ import 'package:shopping_list_app/components/modules/product_category.dart';
 import 'package:shopping_list_app/components/elements/product.dart';
 
 // Database
-import 'package:shopping_list_app/database/database.dart';
-import 'package:shopping_list_app/database/models/cart/cart.dart';
+import 'package:shopping_list_app/states/cart_manager.dart';
 
 // States
 import 'package:shopping_list_app/states/screen_manager.dart';
@@ -23,35 +22,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Cart? cart;
-
   bool isLoading = true;
 
   @override
-  void initState() {
-    super.initState();
-
-    DatabaseHelper.database.whenComplete(() async {
-      final currentCart = await Cart.getOrCreateCurrent();
-
-      setState(() {
-        cart = currentCart;
-        isLoading = false;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Scaffold(
-        body: Container(
-          padding: const EdgeInsets.all(16),
-          child: const Text("Loading..."),
-        ),
-      );
-    }
-
     final theme = Theme.of(context);
 
     final ButtonStyle settingsButtonStyle = ButtonStyle(
@@ -71,8 +45,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    return Consumer<ScreenManager>(
-      builder: (context, manager, child) => SingleChildScrollView(
+    return Consumer2<ScreenManager, CartManager>(
+        builder: (context, screenManager, cartManager, child) {
+      if (cartManager.isLoading) {
+        return Scaffold(
+          body: Container(
+            padding: const EdgeInsets.all(16),
+            child: const Text("Loading..."),
+          ),
+        );
+      }
+
+      return SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(top: 48, left: 32, right: 32),
           child: Column(
@@ -141,50 +125,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 22),
-
-              // First product category (without label)
-              ...const [
-                Product(name: "Papier toilette"),
-                SizedBox(height: 9),
-                Product(name: "Canard WC"),
-                SizedBox(height: 9),
-                Product(name: "Sopalin"),
-                SizedBox(height: 36),
-              ],
-
-              // Second product category
-              const ProductCategory(
-                name: "Fruits & Légumes",
-                products: [
-                  Product(name: "Fraises"),
-                  Product(name: "Tomates", unit: Units.g, quantity: 300),
-                  Product(name: "Pommes", unit: Units.g, quantity: 500),
-                  Product(name: "Poires", unit: Units.kg),
-                ],
-              ),
-              const SizedBox(height: 36),
-
-              // Third product category
-              const ProductCategory(
-                name: "Viande",
-                products: [
-                  Product(
-                    name: "Cuisses de poulet",
-                    unit: Units.g,
-                    quantity: 300,
-                  ),
-                  Product(
-                    name: "Boeuf haché",
-                    unit: Units.g,
-                    quantity: 400,
-                    striked: true,
-                  ),
-                ],
-              ),
+              for (final category in cartManager.categories)
+                Column(
+                  children: [
+                    ProductCategory(
+                      name: category,
+                      products: cartManager.products
+                          .where((p) =>
+                              p.category != null &&
+                              p.category!.name == category)
+                          .map(
+                            (p) => Product(
+                              name: p.name,
+                              quantity: p.quantity,
+                              unit: p.unit,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 36),
+                  ],
+                )
             ],
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
