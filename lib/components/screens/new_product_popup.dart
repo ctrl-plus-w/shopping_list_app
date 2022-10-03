@@ -252,7 +252,6 @@ class FavoriteStepFormCategory extends StatelessWidget {
                   style: theme.textTheme.subtitle1,
                   textAlign: TextAlign.center,
                 ),
-                // TODO : Make a box around the icon so as to center it (create a centered frame around it on figma)
                 SvgPicture.asset('assets/favorite_illustration.svg'),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
