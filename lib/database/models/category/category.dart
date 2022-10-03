@@ -55,6 +55,20 @@ class Category {
     return res.map(Category.fromMap).toList();
   }
 
+  static Future<Category?> getByName(String name) async {
+    final database = await DatabaseHelper.database;
+
+    List<Map<String, Object?>> res = await database.query(
+      _tableName,
+      columns: ['id', 'slug', 'name'],
+      where: "$_tableName.name = '$name'",
+    );
+
+    if (res.isEmpty) return null;
+
+    return Category.fromMap(res[0]);
+  }
+
   Future<int> insert([Database? database]) async {
     database = (database ?? await DatabaseHelper.database);
 
