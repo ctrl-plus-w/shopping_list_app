@@ -1,3 +1,9 @@
+import 'package:shopping_list_app/database/models/product/product.dart';
+import 'package:shopping_list_app/database/models/product/product.dart'
+    as product_model show getTableName;
+import 'package:shopping_list_app/database/models/category/category.dart'
+    as category_model show getTableName;
+
 import 'package:sqflite/sqflite.dart';
 
 // Helpers
@@ -7,6 +13,7 @@ import 'package:shopping_list_app/helpers/convert.dart';
 import 'package:shopping_list_app/database/database.dart';
 
 const _tableName = "Cart";
+const _cartProductTableName = "CartProduct";
 
 class Cart {
   int? id;
@@ -44,6 +51,49 @@ class Cart {
       "name": name,
       "archived": boolToInt(archived),
       "deleted": boolToInt(archived),
+    });
+  }
+
+  /// Add a [Product] to the cart
+  ///
+  /// If the [noDuplicate] parameter is set to [true] and the product is already
+  /// in the cart, and error will be thrown. The function also checks if the
+  /// product exists, if not, the product is created. That allows to create the
+  /// product and add it to the cart at the same time.
+  Future<void> addProduct(Product product, {bool noDuplicate = false}) async {
+    final database = await DatabaseHelper.database;
+
+    // Check if the product exists
+    final productWithIdCount = Sqflite.firstIntValue(
+      await database.rawQuery('''
+          SELECT COUNT(*) FROM ${product_model.getTableName()}
+            WHERE ${product_model.getTableName()}.id = ${product.id};
+          '''),
+    );
+
+    if (productWithIdCount == 0) {
+      product.id = await createProduct(database, product);
+    }
+
+    // Check if the product is already in the cart
+    final cartProductWithIdCount = Sqflite.firstIntValue(
+      await database.rawQuery('''
+      SELECT COUNT(*) FROM $_cartProductTableName WHERE
+        $_cartProductTableName.product_id = ${product.id};
+    '''),
+    );
+
+    if (cartProductWithIdCount != 0) {
+      if (noDuplicate) {
+        throw Exception('This product already exists in this Cart');
+      }
+
+      return;
+    }
+
+    await database.insert(_cartProductTableName, {
+      "cart_id": id,
+      "product_id": product.id,
     });
   }
 
@@ -136,7 +186,7 @@ Future<void> createCartRelations(Database database) async {
         cart_id INTEGER,
         product_id INTEGER,
         FOREIGN KEY(cart_id) REFERENCES $_tableName(id),
-        FOREIGN KEY(product_id) REFERENCES Product(id)
+        FOREIGN KEY(product_id) REFERENCES ${product_model.getTableName()}(id)
       );
       """);
 
@@ -145,7 +195,7 @@ Future<void> createCartRelations(Database database) async {
         cart_id INTEGER,
         category_id INTEGER,
         FOREIGN KEY(cart_id) REFERENCES $_tableName(id),
-        FOREIGN KEY(category_id) REFERENCES Category(id)
+        FOREIGN KEY(category_id) REFERENCES ${category_model.getTableName()}(id)
       );
       """);
 }
