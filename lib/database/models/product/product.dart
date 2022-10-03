@@ -73,6 +73,11 @@ class Product {
 
     return productId;
   }
+
+  @override
+  String toString() {
+    return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category?.name ?? 'null'})";
+  }
 }
 
 Future<void> createProductTable(Database database) async {
