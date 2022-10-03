@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-
-enum Units {
-  unit,
-  kg,
-  mg,
-  g,
-}
+import 'package:shopping_list_app/database/models/unit/unit.dart';
 
 class Product extends StatefulWidget {
   final String name;
-  final Units unit;
+  final Unit unit;
   final int quantity;
   final bool striked;
 
   const Product({
     Key? key,
     required this.name,
-    this.unit = Units.unit,
+    required this.unit,
     this.quantity = 1,
     this.striked = false,
   }) : super(key: key);
