@@ -413,6 +413,8 @@ class _GeneralStepFormCategoryState extends State<GeneralStepFormCategory> {
   void initState() {
     super.initState();
 
+    defaultUnit = widget.units[0].name;
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final prefs = await SharedPreferences.getInstance();
 
@@ -422,10 +424,13 @@ class _GeneralStepFormCategoryState extends State<GeneralStepFormCategory> {
         );
 
         quantityInputController = TextEditingController(
-            text: prefs.getInt(getPrefPropName('quantity')).toString());
+          text: prefs.getInt(getPrefPropName('quantity')).toString(),
+        );
 
         final quantityType = prefs.getString(getPrefPropName('quantity_type'));
-        defaultUnit = quantityType ?? widget.units[0].name;
+        if (quantityType != null && quantityType.isNotEmpty) {
+          defaultUnit = quantityType;
+        }
 
         _isLoading = false;
       });
