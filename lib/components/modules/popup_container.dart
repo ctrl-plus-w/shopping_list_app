@@ -68,7 +68,7 @@ class _PopupContainerState extends State<PopupContainer> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       minimumSize: Size.zero,
                       padding: EdgeInsets.zero,
-                      primary: Colors.transparent,
+                      backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: close,

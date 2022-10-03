@@ -8,7 +8,7 @@ class BottomNavigationBarButton extends StatelessWidget {
 
   final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
     padding: EdgeInsets.zero,
-    primary: Colors.transparent,
+    backgroundColor: Colors.transparent,
     shadowColor: Colors.transparent,
   );
 

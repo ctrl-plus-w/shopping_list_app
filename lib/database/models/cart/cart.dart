@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:shopping_list_app/database/models/product/product.dart';
 import 'package:shopping_list_app/database/models/product/product.dart'
     as product_model show getTableName;

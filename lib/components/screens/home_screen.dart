@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(7.5),
-                        primary: const Color.fromRGBO(33, 51, 67, 1),
+                        backgroundColor: const Color.fromRGBO(33, 51, 67, 1),
                         shadowColor: Colors.transparent,
                         // TODO : Make the shadow.
                       ),

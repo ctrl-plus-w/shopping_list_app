@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       fontFamily: "Sora",
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          primary: const Color.fromRGBO(107, 121, 134, 1),
+          backgroundColor: const Color.fromRGBO(107, 121, 134, 1),
         ).merge(
           ButtonStyle(
             textStyle: MaterialStateProperty.all(const TextStyle(
@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          primary: const Color.fromRGBO(33, 51, 67, 1),
+          backgroundColor: const Color.fromRGBO(33, 51, 67, 1),
           textStyle: const TextStyle(
             fontSize: 16,
             fontFamily: 'Sora',

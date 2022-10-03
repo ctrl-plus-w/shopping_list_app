@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:shopping_list_app/database/database.dart';
 import 'package:shopping_list_app/database/models/category/category.dart';
 import 'package:shopping_list_app/database/models/unit/unit.dart';

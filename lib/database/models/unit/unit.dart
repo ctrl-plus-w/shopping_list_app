@@ -4,6 +4,8 @@ import 'package:sqflite/sqflite.dart';
 
 const _tableName = "Unit";
 
+// TODO : Why isn't there the slug field on the class ?
+
 class Unit {
   late int? id;
   late String name;
