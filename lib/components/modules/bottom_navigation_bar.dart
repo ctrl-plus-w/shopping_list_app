@@ -77,12 +77,15 @@ class BottomNavigationState extends State<BottomNavigation> {
                 onPressed: () => manager.setScreen(ScreensName.homeScreen),
                 iconPath: "assets/cart.svg",
                 label: "Accueil",
+                active: manager.currentScreenName == ScreensName.homeScreen,
               ),
               BottomNavigationBarButton(
                 onPressed: () =>
                     manager.setScreen(ScreensName.favoriteProductsScreen),
                 iconPath: "assets/favorite.svg",
                 label: "Produits favoris",
+                active: manager.currentScreenName ==
+                    ScreensName.favoriteProductsScreen,
               ),
               const SizedBox(width: 50),
               BottomNavigationBarButton(
@@ -90,11 +93,14 @@ class BottomNavigationState extends State<BottomNavigation> {
                     manager.setScreen(ScreensName.archivedListsScreen),
                 iconPath: "assets/archived.svg",
                 label: "Listes Archivées",
+                active: manager.currentScreenName ==
+                    ScreensName.archivedListsScreen,
               ),
               BottomNavigationBarButton(
                 onPressed: () => manager.setScreen(ScreensName.recipesScreen),
                 iconPath: "assets/recipes.svg",
                 label: "Recettes",
+                active: manager.currentScreenName == ScreensName.recipesScreen,
               ),
             ],
           ),
