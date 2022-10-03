@@ -132,12 +132,14 @@ class _NewProductPopupState extends State<NewProductPopup> {
     // Handling all the saved fields of the CATEGORY SECTION
     getPropName = prefPropNameGetter(pagePrefPrefix, categoryPrefPrefix);
 
-    final String? category = prefs.getString(getPropName("name"));
+    final String? categoryName = prefs.getString(getPropName("name"));
+    if (categoryName == null) {
+      return goToState(States.category);
+    }
 
+    final category = await Category.getByName(categoryName);
     if (category == null) {
-      setState(() => _state = const NavigationAutomata(States.category));
-
-      return;
+      return goToState(States.category);
     }
 
     // Handling all the saved fields of the FAVORITE SECTION
@@ -158,6 +160,7 @@ class _NewProductPopupState extends State<NewProductPopup> {
       quantity: quantity,
       unit: unit,
       favorite: isFavorite,
+      category: category,
     );
 
     final cart = await Cart.getOrCreateCurrent();
