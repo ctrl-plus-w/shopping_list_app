@@ -91,3 +91,7 @@ Future<void> createCategoryRelations(Database database) async {
 Future<void> dropCategoryRelations(Database database) async {
   await DatabaseHelper.dropTable(database, "CategoryProduct");
 }
+
+String getTableName() {
+  return _tableName;
+}
