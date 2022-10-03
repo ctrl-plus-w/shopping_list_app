@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 const _tableName = "Product";
 
 class Product {
-  final int id;
+  int id;
   final String name;
   final int quantity;
   final bool favorite;
@@ -70,4 +70,8 @@ Future<int> createProduct(Database database, Product product) async {
   );
 
   return productId;
+}
+
+String getTableName() {
+  return _tableName;
 }
