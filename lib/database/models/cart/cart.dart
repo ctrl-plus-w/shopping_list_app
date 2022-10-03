@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:shopping_list_app/database/models/product/product.dart';
 import 'package:shopping_list_app/database/models/product/product.dart'
     as product_model show getTableName;
 import 'package:shopping_list_app/database/models/category/category.dart'
     as category_model show getTableName;
+import 'package:shopping_list_app/database/models/unit/unit.dart' as unit_model
+    show getTableName;
 
 import 'package:sqflite/sqflite.dart';
 
@@ -72,7 +76,7 @@ class Cart {
     );
 
     if (productWithIdCount == 0) {
-      product.id = await createProduct(database, product);
+      product.id = await product.create(database);
     }
 
     // Check if the product is already in the cart
@@ -95,6 +99,36 @@ class Cart {
       "cart_id": id,
       "product_id": product.id,
     });
+  }
+
+  /// Get the list of [Product] in the [Cart]
+  Future<List<Product>> getProducts() async {
+    final database = await DatabaseHelper.database;
+
+    final productTableName = product_model.getTableName();
+    final categoryTableName = category_model.getTableName();
+    final unitTableName = unit_model.getTableName();
+
+    final products = await database.rawQuery('''
+      SELECT
+        $productTableName.id as productId, $productTableName.name as productName, $productTableName.quantity as productQuantity, $productTableName.favorite as productIsFavorite,
+        $categoryTableName.name as categoryName, $categoryTableName.id as categoryId, $categoryTableName.slug as categorySlug,
+        $unitTableName.name as unitName, $unitTableName.id as unitId, $unitTableName.slug as unitSlug
+      FROM
+        $_cartProductTableName
+      LEFT JOIN $productTableName
+        ON $_cartProductTableName.product_id = $productTableName.id
+      LEFT JOIN CategoryProduct
+        ON CategoryProduct.product_id = $productTableName.id
+      LEFT JOIN $categoryTableName
+        ON CategoryProduct.category_id = $categoryTableName.id 
+      LEFT JOIN $unitTableName
+        ON $productTableName.unit_id = $unitTableName.id
+      WHERE
+        cart_id = $id;
+    ''');
+
+    return products.map(Product.fromMap).toList();
   }
 
   /// Retrieve all the carts (not deleted).
