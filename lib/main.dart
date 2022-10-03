@@ -127,46 +127,15 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             title: _title,
             theme: _customTheme(),
-            home: Stack(
-              alignment: Alignment.bottomCenter,
-              children: <Widget>[
-                Scaffold(
-                  body: screenManager.currentScreen,
-                  bottomNavigationBar: const BottomNavigation(),
-                  floatingActionButton: const DockedButton(),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerDocked,
-                ),
-                const TemporaryWidget(),
-              ],
+            home: Scaffold(
+              body: screenManager.currentScreen,
+              bottomNavigationBar: const BottomNavigation(),
+              floatingActionButton: const DockedButton(),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class TemporaryWidget extends StatelessWidget {
-  const TemporaryWidget({Key? key}) : super(key: key);
-
-  static Route<Object?> _routeBuilder(BuildContext context, Object? arguments) {
-    return RawDialogRoute(
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return const NewProductPopup();
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: OutlinedButton(
-        onPressed: () {
-          Navigator.of(context).restorablePush(_routeBuilder);
-        },
-        child: const Text('Open dialog'),
       ),
     );
   }
