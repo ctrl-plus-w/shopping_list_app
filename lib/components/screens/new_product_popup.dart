@@ -8,6 +8,7 @@ import 'package:shopping_list_app/components/modules/search_input.dart';
 
 // Database
 import 'package:shopping_list_app/database/database.dart';
+import 'package:shopping_list_app/database/models/cart/cart.dart';
 import 'package:shopping_list_app/database/models/category/category.dart';
 import 'package:shopping_list_app/database/models/product/product.dart';
 
@@ -112,8 +113,6 @@ class _NewProductPopupState extends State<NewProductPopup> {
   }
 
   void submit() async {
-    final database = await DatabaseHelper.database;
-
     final prefs = await SharedPreferences.getInstance();
 
     // Handling all the saved fields of the GENERAL SECTION
@@ -161,7 +160,8 @@ class _NewProductPopupState extends State<NewProductPopup> {
       favorite: isFavorite,
     );
 
-    await createProduct(database, product);
+    final cart = await Cart.getOrCreateCurrent();
+    await cart.addProduct(product);
 
     // Clear the shared prefs
     prefs.clear();
@@ -424,7 +424,7 @@ class _GeneralStepFormCategoryState extends State<GeneralStepFormCategory> {
         );
 
         quantityInputController = TextEditingController(
-          text: prefs.getInt(getPrefPropName('quantity')).toString(),
+          text: (prefs.getInt(getPrefPropName('quantity')) ?? 1).toString(),
         );
 
         final quantityType = prefs.getString(getPrefPropName('quantity_type'));
