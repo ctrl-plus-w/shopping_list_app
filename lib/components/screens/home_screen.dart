@@ -54,9 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final theme = Theme.of(context);
 
-    // TODO : Make the SettingsButton shadow. (Also maybe make this button a component.)
-
     final ButtonStyle settingsButtonStyle = ButtonStyle(
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       backgroundColor: MaterialStateProperty.all(Colors.white),
       shadowColor: MaterialStateProperty.all(Colors.transparent),
       minimumSize: MaterialStateProperty.all(Size.zero),
@@ -87,10 +86,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     "Bienvenue !",
                     style: theme.textTheme.headline1,
                   ),
-                  ElevatedButton(
-                    style: settingsButtonStyle,
-                    onPressed: () {},
-                    child: SvgPicture.asset("assets/settings.svg"),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                          offset: const Offset(1, 1),
+                          color: Colors.black.withOpacity(0.09),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      style: settingsButtonStyle,
+                      onPressed: () {},
+                      child: SvgPicture.asset("assets/settings.svg"),
+                    ),
                   ),
                 ],
               ),
@@ -106,7 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(7.5),
                       backgroundColor: const Color.fromRGBO(33, 51, 67, 1),
                       shadowColor: Colors.transparent,
-                      // TODO : Make the shadow.
                     ),
                     onPressed: () {},
                     child: Row(
