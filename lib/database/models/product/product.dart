@@ -8,13 +8,13 @@ import 'package:sqflite/sqflite.dart';
 const _tableName = "Product";
 
 class Product {
-  int id;
-  Category? category;
+  late int id;
+  late Category? category;
 
-  final String name;
-  final int quantity;
-  final bool favorite;
-  final Unit unit;
+  late String name;
+  late int quantity;
+  late bool favorite;
+  late Unit unit;
 
   Product({
     this.id = -1,
@@ -24,6 +24,24 @@ class Product {
     required this.favorite,
     required this.unit,
   });
+
+  Product.fromMap(Map<String, Object?> map) {
+    id = map["productId"] as int;
+    name = map["productName"] as String;
+    quantity = map["productQuantity"] as int;
+    favorite = map["productIsFavorite"] == '0';
+
+    category = Category(
+      id: map['categoryId'] as int,
+      name: map['categoryName'] as String,
+      slug: map['categorySlug'] as String,
+    );
+
+    unit = Unit(
+      id: map["unitId"] as int,
+      name: map["unitName"] as String,
+    );
+  }
 
   Map<String, dynamic> toMap({bool withId = false}) {
     final map = {
