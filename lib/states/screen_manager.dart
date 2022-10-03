@@ -24,6 +24,7 @@ class ScreenManager extends ChangeNotifier {
   static ScreensName screenName = ScreensName.homeScreen;
 
   get currentScreen => screens[screenName];
+  get currentScreenName => screenName;
 
   /// Change the screen.
   void setScreen(ScreensName newScreenName) {

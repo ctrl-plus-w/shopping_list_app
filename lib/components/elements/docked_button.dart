@@ -2,16 +2,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shopping_list_app/components/screens/new_product_popup.dart';
+import 'package:shopping_list_app/states/screen_manager.dart';
 
 class DockedButton extends StatefulWidget {
-  const DockedButton({Key? key}) : super(key: key);
+  final ScreensName screenName;
+
+  const DockedButton({Key? key, required this.screenName}) : super(key: key);
 
   @override
   State<DockedButton> createState() => _DockedButtonState();
 }
 
 class _DockedButtonState extends State<DockedButton> {
-  static Route<Object?> _routeBuilder(BuildContext context, Object? arguments) {
+  static Route<Object?> _newProductPopupRouteBuilder(
+      BuildContext context, Object? arguments) {
     return RawDialogRoute(
       pageBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation) {
@@ -52,7 +56,9 @@ class _DockedButtonState extends State<DockedButton> {
         ),
       ),
       onPressed: () {
-        Navigator.of(context).restorablePush(_routeBuilder);
+        if (widget.screenName == ScreensName.homeScreen) {
+          Navigator.of(context).restorablePush(_newProductPopupRouteBuilder);
+        }
       },
     );
   }

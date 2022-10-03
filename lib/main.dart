@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_list_app/components/elements/docked_button.dart';
 import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart';
-import 'package:shopping_list_app/components/screens/new_product_popup.dart';
 import 'package:shopping_list_app/database/database.dart';
 
 // States
@@ -130,7 +129,8 @@ class MyApp extends StatelessWidget {
             home: Scaffold(
               body: screenManager.currentScreen,
               bottomNavigationBar: const BottomNavigation(),
-              floatingActionButton: const DockedButton(),
+              floatingActionButton:
+                  DockedButton(screenName: screenManager.currentScreenName),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerDocked,
             ),
