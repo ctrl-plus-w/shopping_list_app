@@ -125,27 +125,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 22),
-              for (final category in cartManager.categories)
-                Column(
-                  children: [
-                    ProductCategory(
-                      name: category,
-                      products: cartManager.products
-                          .where((p) =>
-                              p.category != null &&
-                              p.category!.name == category)
-                          .map(
-                            (p) => Product(
-                              name: p.name,
-                              quantity: p.quantity,
-                              unit: p.unit,
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    const SizedBox(height: 36),
-                  ],
-                )
+              ListView.builder(
+                itemCount: cartManager.categories.length,
+                shrinkWrap: true,
+                itemBuilder: ((context, index) => Column(
+                      children: [
+                        ProductCategory(
+                          name: cartManager.categories.elementAt(index),
+                          products: cartManager.products
+                              .where((p) =>
+                                  p.category != null &&
+                                  p.category!.name ==
+                                      cartManager.categories.elementAt(index))
+                              .map(
+                                (p) => Product(
+                                  name: p.name,
+                                  quantity: p.quantity,
+                                  unit: p.unit,
+                                ),
+                              )
+                              .toList(),
+                        ),
+                        const SizedBox(height: 36),
+                      ],
+                    )),
+              ),
+              // for (final category in cartManager.categories)
+              //   Column(
+              //     children: [
+              //       ProductCategory(
+              //         name: category,
+              //         products: cartManager.products
+              //             .where((p) =>
+              //                 p.category != null &&
+              //                 p.category!.name == category)
+              //             .map(
+              //               (p) => Product(
+              //                 name: p.name,
+              //                 quantity: p.quantity,
+              //                 unit: p.unit,
+              //               ),
+              //             )
+              //             .toList(),
+              //       ),
+              //       const SizedBox(height: 36),
+              //     ],
+              //   )
             ],
           ),
         ),
