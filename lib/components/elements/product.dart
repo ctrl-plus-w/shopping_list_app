@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopping_list_app/database/models/unit/unit.dart';
 
 class Product extends StatefulWidget {
@@ -61,14 +62,58 @@ class _ProductState extends State<Product> {
         const SizedBox(width: 11),
 
         // Product name
-        Text(
-          widget.name,
-          style: theme.textTheme.bodyText1!.merge(
-            TextStyle(
-              decoration: widget.striked
-                  ? TextDecoration.lineThrough
-                  : TextDecoration.none,
-              color: const Color.fromRGBO(33, 51, 67, 1).withOpacity(opacity),
+        Expanded(
+          child: Dismissible(
+            key: Key(widget.name),
+            confirmDismiss: (direction) async => false,
+            background: Container(
+              decoration: const BoxDecoration(),
+              // color: Colors.yellow,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SvgPicture.asset(
+                  'assets/favorite_illustration_xs.svg',
+                  height: 32,
+                ),
+              ),
+            ),
+            secondaryBackground: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Color.fromRGBO(236, 53, 53, 0.5),
+                    Color.fromRGBO(236, 53, 53, 0)
+                  ],
+                  stops: [0.8, 1],
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: SvgPicture.asset(
+                  'assets/delete.svg',
+                  height: 24,
+                ),
+              ),
+            ),
+            child: SizedBox(
+              height: 32,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.name,
+                  style: theme.textTheme.bodyText1!.merge(
+                    TextStyle(
+                      decoration: widget.striked
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                      color: const Color.fromRGBO(33, 51, 67, 1)
+                          .withOpacity(opacity),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
