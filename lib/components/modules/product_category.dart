@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:shopping_list_app/components/elements/product.dart';
 
@@ -16,21 +18,11 @@ class ProductCategory extends StatefulWidget {
 }
 
 class _ProductCategoryState extends State<ProductCategory> {
-  static List<Widget> getProducts(List<Widget> products) {
-    List<Widget> widgets = [];
-
-    for (Widget product in products) {
-      widgets.add(product);
-      widgets.add(const SizedBox(height: 9));
-    }
-
-    return widgets;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           widget.name,
@@ -41,7 +33,16 @@ class _ProductCategoryState extends State<ProductCategory> {
           ),
         ),
         const SizedBox(height: 16),
-        ...getProducts(widget.products),
+        ListView.builder(
+          itemCount: widget.products.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) => Column(
+            children: [
+              widget.products[index],
+              const SizedBox(height: 9),
+            ],
+          ),
+        ),
       ],
     );
   }

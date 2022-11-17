@@ -1,7 +1,17 @@
+import 'dart:developer';
+
 import 'package:shopping_list_app/database/database.dart';
+import 'package:sqflite/sqflite.dart';
+
 import 'package:shopping_list_app/database/models/category/category.dart';
 import 'package:shopping_list_app/database/models/unit/unit.dart';
-import 'package:sqflite/sqflite.dart';
+
+import 'package:shopping_list_app/database/models/product/product.dart'
+    as product_model show getTableName;
+import 'package:shopping_list_app/database/models/category/category.dart'
+    as category_model show getTableName;
+import 'package:shopping_list_app/database/models/unit/unit.dart' as unit_model
+    show getTableName;
 
 const _tableName = "Product";
 
@@ -27,7 +37,7 @@ class Product {
     id = map["productId"] as int;
     name = map["productName"] as String;
     quantity = map["productQuantity"] as int;
-    favorite = map["productIsFavorite"] == '0';
+    favorite = map["productIsFavorite"] == 1;
 
     category = Category(
       id: map['categoryId'] as int,
@@ -107,7 +117,44 @@ class Product {
 
   @override
   String toString() {
-    return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category?.name ?? 'null'})";
+    return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category?.name ?? 'null'}, favorite: $favorite)";
+  }
+
+  static Future<List<Product>> getAll({bool favorite = false}) async {
+    final database = await DatabaseHelper.database;
+
+    final productTableName = product_model.getTableName();
+    final categoryTableName = category_model.getTableName();
+    final unitTableName = unit_model.getTableName();
+
+    final products = await database.rawQuery('''
+      SELECT
+        $productTableName.id as productId,
+        $productTableName.name as productName,
+        $productTableName.quantity as productQuantity, 
+        $productTableName.favorite as productIsFavorite,
+        
+        $categoryTableName.name as categoryName,
+        $categoryTableName.id as categoryId,
+        $categoryTableName.slug as categorySlug,
+
+        $unitTableName.name as unitName,
+        $unitTableName.id as unitId,
+        $unitTableName.slug as unitSlug
+      FROM
+        $_tableName
+      LEFT JOIN CategoryProduct
+        ON CategoryProduct.product_id = $_tableName.id
+      LEFT JOIN $categoryTableName
+        ON CategoryProduct.category_id = $categoryTableName.id 
+      LEFT JOIN $unitTableName
+        ON $_tableName.unit_id = $unitTableName.id
+      WHERE
+        $_tableName.id IS NOT NULL
+        ${favorite ? "AND $_tableName.favorite = 1" : ""};
+      ''');
+
+    return products.map(Product.fromMap).toList();
   }
 }
 

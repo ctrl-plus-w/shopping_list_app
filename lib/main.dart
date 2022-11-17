@@ -10,6 +10,7 @@ import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart'
 
 // States
 import 'package:shopping_list_app/states/cart_manager.dart';
+import 'package:shopping_list_app/states/favorite_manager.dart';
 import 'package:shopping_list_app/states/screen_manager.dart';
 
 void main() {
@@ -18,6 +19,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => ScreenManager()),
         ChangeNotifierProvider(create: (context) => CartManager()),
+        ChangeNotifierProvider(create: (context) => FavoriteManager()),
       ],
       child: const MyApp(),
     ),

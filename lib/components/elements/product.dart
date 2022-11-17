@@ -15,6 +15,9 @@ class Product extends StatefulWidget {
 
   final int quantity;
   final bool striked;
+  final bool deletable;
+
+  final bool deleteOnRemoveFavorite;
 
   final DismissActionFunction favoriteDismissAction;
   final DismissActionFunction deleteDismissAction;
@@ -26,6 +29,8 @@ class Product extends StatefulWidget {
     required this.deleteDismissAction,
     this.quantity = 1,
     this.striked = false,
+    this.deletable = true,
+    this.deleteOnRemoveFavorite = false,
   }) : super(key: key);
 
   @override
@@ -79,10 +84,14 @@ class _ProductState extends State<Product> {
         Expanded(
           child: Dismissible(
             key: _key,
+            direction: (widget.deletable)
+                ? DismissDirection.horizontal
+                : DismissDirection.startToEnd,
             onDismissed: (direction) {
               if (direction == DismissDirection.endToStart) {
                 widget.deleteDismissAction(widget.product);
               }
+
               if (direction == DismissDirection.startToEnd) {
                 widget.favoriteDismissAction(widget.product);
 
@@ -90,8 +99,15 @@ class _ProductState extends State<Product> {
                * Because the Dismissible widget checks if the key is still in
                * the list when dismissed, we need to change this key when adding
                * to favorite.
+               * 
+               * If the [deleteOnRemoveFavorite] parameter is enabled and the
+               * product is a favorite product, that means we don't want to
+               * keep it here, so we do not re-create a Key.
                */
-                _key = Key(Random().nextInt(10000).toString());
+                if (!(widget.product.favorite &&
+                    widget.deleteOnRemoveFavorite)) {
+                  _key = Key(Random().nextInt(10000).toString());
+                }
               }
             },
             background: Container(
@@ -105,26 +121,28 @@ class _ProductState extends State<Product> {
                 ),
               ),
             ),
-            secondaryBackground: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color.fromRGBO(236, 53, 53, 0.5),
-                    Color.fromRGBO(236, 53, 53, 0)
-                  ],
-                  stops: [0.8, 1],
-                ),
-              ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: SvgPicture.asset(
-                  'assets/delete.svg',
-                  height: 24,
-                ),
-              ),
-            ),
+            secondaryBackground: widget.deletable
+                ? Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color.fromRGBO(236, 53, 53, 0.5),
+                          Color.fromRGBO(236, 53, 53, 0)
+                        ],
+                        stops: [0.8, 1],
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: SvgPicture.asset(
+                        'assets/delete.svg',
+                        height: 24,
+                      ),
+                    ),
+                  )
+                : null,
             child: SizedBox(
               height: 32,
               child: Align(

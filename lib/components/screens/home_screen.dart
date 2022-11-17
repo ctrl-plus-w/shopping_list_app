@@ -8,42 +8,18 @@ import 'package:shopping_list_app/components/modules/product_category.dart';
 // Elements
 import 'package:shopping_list_app/components/elements/product.dart';
 
-// Database
-import 'package:shopping_list_app/states/cart_manager.dart';
+// Helpers
+import 'package:shopping_list_app/helpers/style.dart';
 
 // States
-import 'package:shopping_list_app/states/screen_manager.dart';
+import 'package:shopping_list_app/states/cart_manager.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final ButtonStyle settingsButtonStyle = ButtonStyle(
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      backgroundColor: MaterialStateProperty.all(Colors.white),
-      shadowColor: MaterialStateProperty.all(Colors.transparent),
-      minimumSize: MaterialStateProperty.all(Size.zero),
-      padding: MaterialStateProperty.all(const EdgeInsets.all(7.5)),
-      shape: MaterialStateProperty.all(
-        const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          side: BorderSide(
-            color: Color.fromRGBO(187, 195, 208, 1),
-            width: 0.5,
-          ),
-        ),
-      ),
-    );
 
     return Consumer<CartManager>(builder: (context, cartManager, child) {
       if (cartManager.isLoading) {
@@ -89,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
               Text(
                 "Commencez vos courses.",
                 style: theme.textTheme.subtitle1,
