@@ -45,8 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    return Consumer2<ScreenManager, CartManager>(
-        builder: (context, screenManager, cartManager, child) {
+    return Consumer<CartManager>(builder: (context, cartManager, child) {
       if (cartManager.isLoading) {
         return Scaffold(
           body: Container(
