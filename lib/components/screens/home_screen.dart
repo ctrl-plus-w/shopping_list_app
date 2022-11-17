@@ -133,15 +133,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ProductCategory(
                           name: cartManager.categories.elementAt(index),
                           products: cartManager.products
-                              .where((p) =>
-                                  p.category != null &&
-                                  p.category!.name ==
-                                      cartManager.categories.elementAt(index))
+                              .where(
+                                (p) =>
+                                    p.category != null &&
+                                    p.category!.name ==
+                                        cartManager.categories.elementAt(index),
+                              )
                               .map(
                                 (p) => Product(
-                                  name: p.name,
-                                  quantity: p.quantity,
-                                  unit: p.unit,
+                                  product: p,
+                                  deleteDismissAction:
+                                      cartManager.deleteProduct,
+                                  favoriteDismissAction:
+                                      cartManager.switchProductFavorite,
                                 ),
                               )
                               .toList(),

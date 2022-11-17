@@ -274,7 +274,7 @@ class FavoriteStepFormCategory extends StatelessWidget {
 
                           await submit();
 
-                          await cartManager.updateProducts();
+                          await cartManager.refreshProducts();
                         },
                         child: const Text('Oui l\'ajouter !'),
                       ),

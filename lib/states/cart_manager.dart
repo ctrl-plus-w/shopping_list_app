@@ -21,10 +21,10 @@ class CartManager extends ChangeNotifier {
   Future<void> setCart() async {
     _cart = await Cart.getOrCreateCurrent();
 
-    await updateProducts();
+    await refreshProducts();
   }
 
-  Future<void> updateProducts() async {
+  Future<void> refreshProducts() async {
     _isLoading = true;
 
     if (_cart != null) {
@@ -42,5 +42,25 @@ class CartManager extends ChangeNotifier {
     _isLoading = false;
 
     notifyListeners();
+  }
+
+  Future<void> deleteProduct(Product product) async {
+    if (_cart == null) return;
+
+    product.delete();
+
+    refreshProducts();
+  }
+
+  Future<void> switchProductFavorite(Product product) async {
+    if (cart == null) return;
+
+    if (!product.favorite) {
+      product.addToFavorite();
+    } else {
+      product.removeFromFavorite();
+    }
+
+    refreshProducts();
   }
 }

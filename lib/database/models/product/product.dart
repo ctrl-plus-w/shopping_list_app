@@ -74,6 +74,37 @@ class Product {
     return productId;
   }
 
+  Future<void> updateFavoriteState(bool state) async {
+    final database = await DatabaseHelper.database;
+
+    await database.update(
+      _tableName,
+      {"favorite": state ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> addToFavorite() {
+    return updateFavoriteState(true);
+  }
+
+  Future<void> removeFromFavorite() {
+    return updateFavoriteState(false);
+  }
+
+  Future<bool> delete() async {
+    final database = await DatabaseHelper.database;
+
+    final productDeleted = await database.delete(
+      _tableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    return productDeleted > 0;
+  }
+
   @override
   String toString() {
     return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category?.name ?? 'null'})";

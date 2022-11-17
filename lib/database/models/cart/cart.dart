@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:shopping_list_app/database/models/product/product.dart';
 import 'package:shopping_list_app/database/models/product/product.dart'
     as product_model show getTableName;
@@ -109,9 +111,18 @@ class Cart {
 
     final products = await database.rawQuery('''
       SELECT
-        $productTableName.id as productId, $productTableName.name as productName, $productTableName.quantity as productQuantity, $productTableName.favorite as productIsFavorite,
-        $categoryTableName.name as categoryName, $categoryTableName.id as categoryId, $categoryTableName.slug as categorySlug,
-        $unitTableName.name as unitName, $unitTableName.id as unitId, $unitTableName.slug as unitSlug
+        $productTableName.id as productId,
+        $productTableName.name as productName,
+        $productTableName.quantity as productQuantity, 
+        $productTableName.favorite as productIsFavorite,
+        
+        $categoryTableName.name as categoryName,
+        $categoryTableName.id as categoryId,
+        $categoryTableName.slug as categorySlug,
+
+        $unitTableName.name as unitName,
+        $unitTableName.id as unitId,
+        $unitTableName.slug as unitSlug
       FROM
         $_cartProductTableName
       LEFT JOIN $productTableName
@@ -123,8 +134,16 @@ class Cart {
       LEFT JOIN $unitTableName
         ON $productTableName.unit_id = $unitTableName.id
       WHERE
-        cart_id = $id;
+        cart_id = $id AND
+        $productTableName.id IS NOT NULL;
     ''');
+
+    /**
+     * The `$productTableName.id IS NOT NULL` condition prevent null product
+     * being returned in the case there are product still in the CartProduct
+     * table while being deleted on the Product table.
+     */
+
 
     return products.map(Product.fromMap).toList();
   }

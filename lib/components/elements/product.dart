@@ -1,17 +1,29 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shopping_list_app/database/models/unit/unit.dart';
+
+// Models
+import 'package:shopping_list_app/database/models/product/product.dart'
+    as product_model;
+
+typedef DismissActionFunction = void Function(product_model.Product product);
 
 class Product extends StatefulWidget {
-  final String name;
-  final Unit unit;
+  final product_model.Product product;
+
   final int quantity;
   final bool striked;
 
+  final DismissActionFunction favoriteDismissAction;
+  final DismissActionFunction deleteDismissAction;
+
   const Product({
     Key? key,
-    required this.name,
-    required this.unit,
+    required this.product,
+    required this.favoriteDismissAction,
+    required this.deleteDismissAction,
     this.quantity = 1,
     this.striked = false,
   }) : super(key: key);
@@ -21,6 +33,8 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
+  Key _key = Key(Random().nextInt(10000).toString());
+
   @override
   Widget build(BuildContext context) {
     final double opacity = widget.striked ? 0.4 : 1;
@@ -49,7 +63,7 @@ class _ProductState extends State<Product> {
             ],
           ),
           child: Text(
-            "${widget.quantity} ${widget.unit.name}.",
+            "${widget.quantity} ${widget.product.unit.name}.",
             style: TextStyle(
               fontSize: 11,
               color:
@@ -64,8 +78,22 @@ class _ProductState extends State<Product> {
         // Product name
         Expanded(
           child: Dismissible(
-            key: Key(widget.name),
-            confirmDismiss: (direction) async => false,
+            key: _key,
+            onDismissed: (direction) {
+              if (direction == DismissDirection.endToStart) {
+                widget.deleteDismissAction(widget.product);
+              }
+              if (direction == DismissDirection.startToEnd) {
+                widget.favoriteDismissAction(widget.product);
+
+                /**
+               * Because the Dismissible widget checks if the key is still in
+               * the list when dismissed, we need to change this key when adding
+               * to favorite.
+               */
+                _key = Key(Random().nextInt(10000).toString());
+              }
+            },
             background: Container(
               decoration: const BoxDecoration(),
               // color: Colors.yellow,
@@ -102,7 +130,7 @@ class _ProductState extends State<Product> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  widget.name,
+                  widget.product.name,
                   style: theme.textTheme.bodyText1!.merge(
                     TextStyle(
                       decoration: widget.striked
