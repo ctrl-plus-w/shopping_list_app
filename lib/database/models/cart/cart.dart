@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:shopping_list_app/database/models/product/product.dart';
 import 'package:shopping_list_app/database/models/product/product.dart'
     as product_model show getTableName;
@@ -143,7 +141,6 @@ class Cart {
      * being returned in the case there are product still in the CartProduct
      * table while being deleted on the Product table.
      */
-
 
     return products.map(Product.fromMap).toList();
   }
