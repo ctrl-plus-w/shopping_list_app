@@ -154,27 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     )),
               ),
-              // for (final category in cartManager.categories)
-              //   Column(
-              //     children: [
-              //       ProductCategory(
-              //         name: category,
-              //         products: cartManager.products
-              //             .where((p) =>
-              //                 p.category != null &&
-              //                 p.category!.name == category)
-              //             .map(
-              //               (p) => Product(
-              //                 name: p.name,
-              //                 quantity: p.quantity,
-              //                 unit: p.unit,
-              //               ),
-              //             )
-              //             .toList(),
-              //       ),
-              //       const SizedBox(height: 36),
-              //     ],
-              //   )
             ],
           ),
         ),
