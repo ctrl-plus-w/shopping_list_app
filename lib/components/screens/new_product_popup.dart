@@ -114,7 +114,7 @@ class _NewProductPopupState extends State<NewProductPopup> {
     setState(() => _state = NavigationAutomata(state));
   }
 
-  Future<void> submit() async {
+  Future<void> submit(Function refreshProducts) async {
     final prefs = await SharedPreferences.getInstance();
 
     // Handling all the saved fields of the GENERAL SECTION
@@ -171,6 +171,9 @@ class _NewProductPopupState extends State<NewProductPopup> {
     // Clear the shared prefs
     prefs.clear();
 
+    // Refresh the products before closing the popup
+    await refreshProducts();
+
     // Because the func is async, we need to check if the component is mounted before calling the Navigator.
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -186,36 +189,38 @@ class _NewProductPopupState extends State<NewProductPopup> {
 
     final theme = Theme.of(context);
 
-    return PopupContainer(
-      child: Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Nouveau produit", style: theme.textTheme.headline2),
-            const SizedBox(height: 6),
-            Text("Ajouter un nouveau produit.",
-                style: theme.textTheme.subtitle1),
-            const SizedBox(height: 29),
-            if (_state.state == States.general)
-              GeneralStepFormCategory(
-                units: _units,
-                setNextState: setNextState,
-                setPreviousState: setPreviousState,
-              )
-            else if (_state.state == States.category)
-              CategoryStepFormCategory(
-                categories: _categories,
-                setNextState: setNextState,
-                setPreviousState: setPreviousState,
-              )
-            else if (_state.state == States.favorite)
-              FavoriteStepFormCategory(
-                setNextState: setNextState,
-                setPreviousState: setPreviousState,
-                submit: submit,
-              ),
-          ],
+    return Consumer<CartManager>(
+      builder: (context, cartManager, child) => PopupContainer(
+        child: Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Nouveau produit", style: theme.textTheme.headline2),
+              const SizedBox(height: 6),
+              Text("Ajouter un nouveau produit.",
+                  style: theme.textTheme.subtitle1),
+              const SizedBox(height: 29),
+              if (_state.state == States.general)
+                GeneralStepFormCategory(
+                  units: _units,
+                  setNextState: setNextState,
+                  setPreviousState: setPreviousState,
+                )
+              else if (_state.state == States.category)
+                CategoryStepFormCategory(
+                  categories: _categories,
+                  setNextState: setNextState,
+                  setPreviousState: setPreviousState,
+                )
+              else if (_state.state == States.favorite)
+                FavoriteStepFormCategory(
+                  setNextState: setNextState,
+                  setPreviousState: setPreviousState,
+                  submit: () => submit(cartManager.refreshProducts),
+                ),
+            ],
+          ),
         ),
       ),
     );
