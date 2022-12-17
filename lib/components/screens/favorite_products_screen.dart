@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_list_app/components/elements/product.dart';
