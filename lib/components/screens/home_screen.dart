@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                                 (p) => Product(
                                   product: p,
                                   deleteDismissAction:
-                                      cartManager.deleteProduct,
+                                      cartManager.deleteProductFromMainCart,
                                   favoriteDismissAction:
                                       cartManager.switchProductFavorite,
                                 ),

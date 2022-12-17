@@ -44,10 +44,10 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteProduct(Product product) async {
+  Future<void> deleteProductFromMainCart(Product product) async {
     if (_cart == null) return;
 
-    product.delete();
+    await product.deleteFromMainCart();
 
     refreshProducts();
   }

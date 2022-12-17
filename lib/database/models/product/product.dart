@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:shopping_list_app/database/database.dart';
+import 'package:shopping_list_app/database/models/cart/cart.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:shopping_list_app/database/models/category/category.dart';
@@ -113,6 +112,53 @@ class Product {
     );
 
     return productDeleted > 0;
+  }
+
+  Future<bool> deleteFromMainCart() async {
+    final database = await DatabaseHelper.database;
+
+    /// Returns this shape :
+    /// [{RecipeCount: int, CartCount: int}]
+    ///
+    final res = await database.rawQuery('''
+      SELECT * FROM
+      (
+        SELECT COUNT(*) as recipeCount FROM RecipeProduct
+          WHERE RecipeProduct.product_id = $id
+      ),
+      (
+        SELECT COUNT(*) as cartCount FROM CartProduct
+          JOIN Cart ON CartProduct.cart_id = Cart.id  
+        WHERE CartProduct.product_id = $id
+          AND Cart.archived = 1
+      );
+    ''');
+
+    // The amount of recipe where the product is in
+    int recipeCount = res[0]['recipeCount'] as int;
+
+    // The amount of carts where the product is in (archived carts)
+    int cartCount = res[0]['cartCount'] as int;
+
+    int deleteCount = 0;
+
+    if (favorite || recipeCount > 0 || cartCount > 0) {
+      final cart = await Cart.getOrCreateCurrent();
+
+      deleteCount = await database.delete(
+        'CartProduct',
+        where: 'product_id = ? AND cart_id = ?',
+        whereArgs: [id, cart.id],
+      );
+    } else {
+      deleteCount = await database.delete(
+        _tableName,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
+
+    return deleteCount > 0;
   }
 
   @override
