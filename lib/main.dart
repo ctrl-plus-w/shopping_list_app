@@ -11,6 +11,7 @@ import 'package:shopping_list_app/components/modules/bottom_navigation_bar.dart'
 // States
 import 'package:shopping_list_app/states/cart_manager.dart';
 import 'package:shopping_list_app/states/favorite_manager.dart';
+import 'package:shopping_list_app/states/recipe_manager.dart';
 import 'package:shopping_list_app/states/screen_manager.dart';
 
 void main() {
@@ -20,6 +21,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => ScreenManager()),
         ChangeNotifierProvider(create: (context) => CartManager()),
         ChangeNotifierProvider(create: (context) => FavoriteManager()),
+        ChangeNotifierProvider(create: (context) => RecipeManager()),
       ],
       child: const MyApp(),
     ),
@@ -66,6 +68,11 @@ class MyApp extends StatelessWidget {
         ),
         headline2: TextStyle(
           fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Color.fromRGBO(33, 51, 67, 1),
+        ),
+        headline3: TextStyle(
+          fontSize: 18,
           fontWeight: FontWeight.w600,
           color: Color.fromRGBO(33, 51, 67, 1),
         ),
