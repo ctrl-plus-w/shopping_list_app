@@ -83,6 +83,17 @@ class Product {
     return productId;
   }
 
+  Future<void> updateQuantity(int quantity) async {
+    final database = await DatabaseHelper.database;
+
+    await database.update(
+      _tableName,
+      {"quantity": quantity},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<void> updateFavoriteState(bool state) async {
     final database = await DatabaseHelper.database;
 
@@ -166,14 +177,15 @@ class Product {
     return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category?.name ?? 'null'}, favorite: $favorite)";
   }
 
-  static Future<List<Product>> getAll({bool favorite = false}) async {
+  static Future<List<Product>> getAll(
+      {bool favorite = false, List<int> ids = const []}) async {
     final database = await DatabaseHelper.database;
 
     final productTableName = product_model.getTableName();
     final categoryTableName = category_model.getTableName();
     final unitTableName = unit_model.getTableName();
 
-    final products = await database.rawQuery('''
+    final query = ('''
       SELECT
         $productTableName.id as productId,
         $productTableName.name as productName,
@@ -196,9 +208,11 @@ class Product {
       LEFT JOIN $unitTableName
         ON $_tableName.unit_id = $unitTableName.id
       WHERE
-        $_tableName.id IS NOT NULL
+        $_tableName.id ${ids.isEmpty ? "IS NOT NULL" : "IN (${ids.join(',')})"}
         ${favorite ? "AND $_tableName.favorite = 1" : ""};
       ''');
+
+    final products = await database.rawQuery(query);
 
     return products.map(Product.fromMap).toList();
   }
