@@ -12,7 +12,6 @@ typedef DismissActionFunction = void Function(product_model.Product product);
 class Product extends StatefulWidget {
   final product_model.Product product;
 
-  final int quantity;
   final bool striked;
   final bool deletable;
 
@@ -26,7 +25,6 @@ class Product extends StatefulWidget {
     required this.product,
     required this.favoriteDismissAction,
     required this.deleteDismissAction,
-    this.quantity = 1,
     this.striked = false,
     this.deletable = true,
     this.deleteOnRemoveFavorite = false,
@@ -67,7 +65,7 @@ class _ProductState extends State<Product> {
             ],
           ),
           child: Text(
-            "${widget.quantity} ${widget.product.unit.name}.",
+            "${widget.product.quantity} ${widget.product.unit.name}.",
             style: TextStyle(
               fontSize: 11,
               color:
