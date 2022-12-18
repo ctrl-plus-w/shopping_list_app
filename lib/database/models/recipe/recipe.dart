@@ -1,4 +1,5 @@
 import 'package:shopping_list_app/database/database.dart';
+import 'package:shopping_list_app/database/models/product/product.dart';
 import 'package:sqflite/sqflite.dart';
 
 const _tableName = "Recipe";
@@ -6,11 +7,40 @@ const _tableName = "Recipe";
 class Recipe {
   final int id;
   final String name;
+  final List<Product> products;
 
   Recipe({
     required this.id,
     required this.name,
+    this.products = const [],
   });
+
+  static Future<List<Recipe>> getAll() async {
+    final database = await DatabaseHelper.database;
+
+    final recipeRes = await database.query(_tableName);
+
+    List<Recipe> recipes = <Recipe>[];
+
+    for (final recipe in recipeRes) {
+      final id = recipe['id'] as int;
+      final name = recipe['name'] as String;
+
+      final recipeProductsId = (await database.query(
+        'RecipeProduct',
+        where: 'RecipeProduct.recipe_id = ?',
+        whereArgs: [id],
+      ))
+          .map((res) => res['product_id'] as int)
+          .toList();
+
+      final products = await Product.getAll(ids: recipeProductsId);
+
+      recipes.add(Recipe(id: id, name: name, products: products));
+    }
+
+    return recipes;
+  }
 }
 
 Future<void> createRecipeTable(Database database) async {
