@@ -65,7 +65,9 @@ class Product {
     return map;
   }
 
-  Future<int> create(Database database) async {
+  Future<int> create() async {
+    final database = await DatabaseHelper.database;
+
     final productId = await database.insert(
       _tableName,
       toMap(),
