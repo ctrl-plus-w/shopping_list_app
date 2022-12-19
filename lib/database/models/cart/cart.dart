@@ -74,7 +74,7 @@ class Cart {
     );
 
     if (productWithIdCount == 0) {
-      product.id = await product.create(database);
+      product.id = await product.create();
     }
 
     // Check if the product is already in the cart

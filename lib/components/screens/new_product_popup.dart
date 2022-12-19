@@ -17,6 +17,7 @@ import 'package:shopping_list_app/database/models/product/product.dart';
 import 'package:shopping_list_app/database/models/unit/unit.dart';
 import 'package:shopping_list_app/helpers/preferences.dart';
 import 'package:shopping_list_app/states/cart_manager.dart';
+import 'package:shopping_list_app/states/favorite_manager.dart';
 import 'package:slugify/slugify.dart';
 
 const String pagePrefPrefix = "new_produt_page";
@@ -31,7 +32,14 @@ enum States {
 }
 
 class NewProductPopup extends StatefulWidget {
-  const NewProductPopup({Key? key}) : super(key: key);
+  final bool skipFavoriteStep;
+  final bool doNotAddToCart;
+
+  const NewProductPopup({
+    this.skipFavoriteStep = false,
+    this.doNotAddToCart = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<NewProductPopup> createState() => _NewProductPopupState();
@@ -39,15 +47,16 @@ class NewProductPopup extends StatefulWidget {
 
 class NavigationAutomata {
   final States state;
+  final bool skipFavoriteState;
 
-  const NavigationAutomata(this.state);
+  const NavigationAutomata(this.state, {this.skipFavoriteState = false});
 
   NavigationAutomata? next() {
     if (state == States.general) {
       return const NavigationAutomata(States.category);
     }
 
-    if (state == States.category) {
+    if (state == States.category && !skipFavoriteState) {
       return const NavigationAutomata(States.favorite);
     }
 
@@ -68,7 +77,7 @@ class NavigationAutomata {
 }
 
 class _NewProductPopupState extends State<NewProductPopup> {
-  NavigationAutomata _state = const NavigationAutomata(States.general);
+  late NavigationAutomata _state;
 
   List<Unit> _units = <Unit>[];
   List<Category> _categories = <Category>[];
@@ -77,6 +86,9 @@ class _NewProductPopupState extends State<NewProductPopup> {
   @override
   void initState() {
     super.initState();
+
+    _state = NavigationAutomata(States.general,
+        skipFavoriteState: widget.skipFavoriteStep);
 
     DatabaseHelper.database.whenComplete(() async {
       List<Unit> units = await Unit.getAll();
@@ -147,7 +159,9 @@ class _NewProductPopupState extends State<NewProductPopup> {
     // Handling all the saved fields of the FAVORITE SECTION
     getPropName = prefPropNameGetter(pagePrefPrefix, favoritePrefPrefix);
 
-    final bool isFavorite = prefs.getBool(getPropName("enabled")) ?? false;
+    final bool isFavorite = widget.skipFavoriteStep
+        ? true
+        : (prefs.getBool(getPropName("enabled")) ?? false);
 
     // Handling all the data and creating the product
     final unit = await Unit.getByName(quantityType);
@@ -165,8 +179,12 @@ class _NewProductPopupState extends State<NewProductPopup> {
       category: category,
     );
 
-    final cart = await Cart.getOrCreateCurrent();
-    await cart.addProduct(product);
+    if (!widget.doNotAddToCart) {
+      final cart = await Cart.getOrCreateCurrent();
+      await cart.addProduct(product);
+    } else {
+      await product.create();
+    }
 
     // Clear the shared prefs
     prefs.clear();
@@ -189,8 +207,8 @@ class _NewProductPopupState extends State<NewProductPopup> {
 
     final theme = Theme.of(context);
 
-    return Consumer<CartManager>(
-      builder: (context, cartManager, child) => PopupContainer(
+    return Consumer2<CartManager, FavoriteManager>(
+      builder: (context, cartManager, favoriteManager, child) => PopupContainer(
         child: Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -212,6 +230,8 @@ class _NewProductPopupState extends State<NewProductPopup> {
                   categories: _categories,
                   setNextState: setNextState,
                   setPreviousState: setPreviousState,
+                  skipFavoriteStep: widget.skipFavoriteStep,
+                  submit: () => submit(favoriteManager.refreshProducts),
                 )
               else if (_state.state == States.favorite)
                 FavoriteStepFormCategory(
@@ -300,11 +320,16 @@ class CategoryStepFormCategory extends StatefulWidget {
   final void Function() setPreviousState;
   final List<Category> categories;
 
+  final Future<void> Function() submit;
+  final bool skipFavoriteStep;
+
   const CategoryStepFormCategory({
     Key? key,
     required this.categories,
     required this.setNextState,
     required this.setPreviousState,
+    required this.submit,
+    required this.skipFavoriteStep,
   }) : super(key: key);
 
   @override
@@ -380,7 +405,11 @@ class _CategoryStepFormCategoryState extends State<CategoryStepFormCategory> {
                         _categorySelectedController.text,
                       );
 
-                      widget.setNextState();
+                      if (widget.skipFavoriteStep) {
+                        await widget.submit();
+                      } else {
+                        widget.setNextState();
+                      }
                     }
                   },
                   child: const Text('Créer le produit'),

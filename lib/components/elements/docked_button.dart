@@ -15,11 +15,34 @@ class DockedButton extends StatefulWidget {
 
 class _DockedButtonState extends State<DockedButton> {
   static Route<Object?> _newProductPopupRouteBuilder(
-      BuildContext context, Object? arguments) {
+    BuildContext context,
+    Object? arguments,
+  ) {
     return RawDialogRoute(
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
+      pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
         return const NewProductPopup();
+      },
+    );
+  }
+
+  static Route<Object?> _favoriteNewProductPopupRouteBuilder(
+    BuildContext context,
+    Object? arguments,
+  ) {
+    return RawDialogRoute(
+      pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return const NewProductPopup(
+          skipFavoriteStep: true,
+          doNotAddToCart: true,
+        );
       },
     );
   }
@@ -58,6 +81,11 @@ class _DockedButtonState extends State<DockedButton> {
       onPressed: () {
         if (widget.screenName == ScreensName.homeScreen) {
           Navigator.of(context).restorablePush(_newProductPopupRouteBuilder);
+        }
+
+        if (widget.screenName == ScreensName.favoriteProductsScreen) {
+          Navigator.of(context)
+              .restorablePush(_favoriteNewProductPopupRouteBuilder);
         }
       },
     );
