@@ -2,6 +2,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shopping_list_app/components/screens/new_product_popup.dart';
+import 'package:shopping_list_app/components/screens/new_recipe_popup.dart';
 import 'package:shopping_list_app/states/screen_manager.dart';
 
 class DockedButton extends StatefulWidget {
@@ -17,35 +18,47 @@ class _DockedButtonState extends State<DockedButton> {
   static Route<Object?> _newProductPopupRouteBuilder(
     BuildContext context,
     Object? arguments,
-  ) {
-    return RawDialogRoute(
-      pageBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return const NewProductPopup();
-      },
-    );
-  }
+  ) =>
+      RawDialogRoute(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return const NewProductPopup();
+        },
+      );
 
   static Route<Object?> _favoriteNewProductPopupRouteBuilder(
     BuildContext context,
     Object? arguments,
-  ) {
-    return RawDialogRoute(
-      pageBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return const NewProductPopup(
-          skipFavoriteStep: true,
-          doNotAddToCart: true,
-        );
-      },
-    );
-  }
+  ) =>
+      RawDialogRoute(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return const NewProductPopup(
+            skipFavoriteStep: true,
+            doNotAddToCart: true,
+          );
+        },
+      );
+
+  static Route<Object?> _newRecipePopupRouteBuilder(
+    BuildContext context,
+    Object? arguments,
+  ) =>
+      RawDialogRoute(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return const NewRecipePopup();
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +99,10 @@ class _DockedButtonState extends State<DockedButton> {
         if (widget.screenName == ScreensName.favoriteProductsScreen) {
           Navigator.of(context)
               .restorablePush(_favoriteNewProductPopupRouteBuilder);
+        }
+
+        if (widget.screenName == ScreensName.recipesScreen) {
+          Navigator.of(context).restorablePush(_newRecipePopupRouteBuilder);
         }
       },
     );
