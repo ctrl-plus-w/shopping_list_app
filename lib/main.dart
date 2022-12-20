@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(3)),
           borderSide: BorderSide(
             color: Color.fromRGBO(187, 195, 208, 1),
-            width: 0.2,
+            width: 1,
           ),
         ),
 
@@ -100,7 +100,7 @@ class MyApp extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(3)),
           borderSide: BorderSide(
             color: Color.fromRGBO(187, 195, 208, 1),
-            width: 0.2,
+            width: 1,
           ),
         ),
 
