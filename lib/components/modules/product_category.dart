@@ -32,6 +32,7 @@ class _ProductCategoryState extends State<ProductCategory> {
         ),
         const SizedBox(height: 16),
         ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: widget.products.length,
           shrinkWrap: true,
           itemBuilder: (context, index) => Column(

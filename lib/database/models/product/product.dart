@@ -22,6 +22,7 @@ class Product {
   late int quantity;
   late bool favorite;
   late Unit unit;
+  late bool checked;
 
   Product({
     this.id = -1,
@@ -30,6 +31,7 @@ class Product {
     required this.quantity,
     required this.favorite,
     required this.unit,
+    required this.checked,
   });
 
   Product.fromMap(Map<String, Object?> map) {
@@ -37,6 +39,7 @@ class Product {
     name = map["productName"] as String;
     quantity = map["productQuantity"] as int;
     favorite = map["productIsFavorite"] == 1;
+    checked = map["productIsChecked"] == 1;
 
     category = Category(
       id: map['categoryId'] as int,
@@ -105,6 +108,19 @@ class Product {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<bool> updateCheckedState(bool state) async {
+    final database = await DatabaseHelper.database;
+
+    final count = await database.update(
+      "CategoryProduct",
+      {"checked": state ? 1 : 0},
+      where: 'product_id = ?',
+      whereArgs: [id],
+    );
+
+    return count > 0;
   }
 
   Future<void> addToFavorite() {
@@ -193,6 +209,7 @@ class Product {
         $productTableName.name as productName,
         $productTableName.quantity as productQuantity, 
         $productTableName.favorite as productIsFavorite,
+        CategoryProduct.checked as productIsChecked,
         
         $categoryTableName.name as categoryName,
         $categoryTableName.id as categoryId,
