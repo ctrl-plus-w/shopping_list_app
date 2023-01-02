@@ -113,6 +113,7 @@ class Cart {
         $productTableName.name as productName,
         $productTableName.quantity as productQuantity, 
         $productTableName.favorite as productIsFavorite,
+        $productTableName.checked as productIsChecked,
         
         $categoryTableName.name as categoryName,
         $categoryTableName.id as categoryId,
@@ -125,10 +126,8 @@ class Cart {
         $_cartProductTableName
       LEFT JOIN $productTableName
         ON $_cartProductTableName.product_id = $productTableName.id
-      LEFT JOIN CategoryProduct
-        ON CategoryProduct.product_id = $productTableName.id
       LEFT JOIN $categoryTableName
-        ON CategoryProduct.category_id = $categoryTableName.id 
+        ON $productTableName.category_id = $categoryTableName.id 
       LEFT JOIN $unitTableName
         ON $productTableName.unit_id = $unitTableName.id
       WHERE
@@ -237,19 +236,9 @@ Future<void> createCartRelations(Database database) async {
         FOREIGN KEY(product_id) REFERENCES ${product_model.getTableName()}(id)
       );
       """);
-
-  await database.execute("""
-      CREATE TABLE CartCategory (
-        cart_id INTEGER,
-        category_id INTEGER,
-        FOREIGN KEY(cart_id) REFERENCES $_tableName(id),
-        FOREIGN KEY(category_id) REFERENCES ${category_model.getTableName()}(id)
-      );
-      """);
 }
 
 /// Drop the cart relations tables.
 Future<void> dropCartRelations(Database database) async {
   await DatabaseHelper.dropTable(database, "CartProduct");
-  await DatabaseHelper.dropTable(database, "CartCategory");
 }

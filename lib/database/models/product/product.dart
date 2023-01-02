@@ -5,8 +5,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:shopping_list_app/database/models/category/category.dart';
 import 'package:shopping_list_app/database/models/unit/unit.dart';
 
-import 'package:shopping_list_app/database/models/product/product.dart'
-    as product_model show getTableName;
 import 'package:shopping_list_app/database/models/category/category.dart'
     as category_model show getTableName;
 import 'package:shopping_list_app/database/models/unit/unit.dart' as unit_model
@@ -16,7 +14,7 @@ const _tableName = "Product";
 
 class Product {
   late int id;
-  late Category? category;
+  late Category category;
 
   late String name;
   late int quantity;
@@ -26,7 +24,7 @@ class Product {
 
   Product({
     this.id = -1,
-    this.category,
+    required this.category,
     required this.name,
     required this.quantity,
     required this.favorite,
@@ -59,6 +57,8 @@ class Product {
       "quantity": quantity,
       "favorite": favorite ? 1 : 0,
       "unit_id": unit.id,
+      "category_id": category.id,
+      "checked": checked ? 1 : 0,
     };
 
     if (withId) {
@@ -76,14 +76,6 @@ class Product {
       toMap(),
       conflictAlgorithm: ConflictAlgorithm.fail,
     );
-
-    if (category != null && category?.id != null && category?.id != -1) {
-      await database.insert('CategoryProduct', {
-        "category_id": category!.id,
-        "product_id": productId,
-        "checked": 0,
-      });
-    }
 
     return productId;
   }
@@ -192,24 +184,23 @@ class Product {
 
   @override
   String toString() {
-    return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category?.name ?? 'null'}, favorite: $favorite)";
+    return "Product(id: $id, name: $name, quantity: $quantity, unit: ${unit.name}, category: ${category.name}, favorite: $favorite)";
   }
 
   static Future<List<Product>> getAll(
       {bool favorite = false, List<int> ids = const []}) async {
     final database = await DatabaseHelper.database;
 
-    final productTableName = product_model.getTableName();
     final categoryTableName = category_model.getTableName();
     final unitTableName = unit_model.getTableName();
 
     final query = ('''
       SELECT
-        $productTableName.id as productId,
-        $productTableName.name as productName,
-        $productTableName.quantity as productQuantity, 
-        $productTableName.favorite as productIsFavorite,
-        CategoryProduct.checked as productIsChecked,
+        $_tableName.id as productId,
+        $_tableName.name as productName,
+        $_tableName.quantity as productQuantity, 
+        $_tableName.favorite as productIsFavorite,
+        $_tableName.checked as productIsChecked,
         
         $categoryTableName.name as categoryName,
         $categoryTableName.id as categoryId,
@@ -220,10 +211,8 @@ class Product {
         $unitTableName.slug as unitSlug
       FROM
         $_tableName
-      LEFT JOIN CategoryProduct
-        ON CategoryProduct.product_id = $_tableName.id
       LEFT JOIN $categoryTableName
-        ON CategoryProduct.category_id = $categoryTableName.id 
+        ON $_tableName.category_id = $categoryTableName.id 
       LEFT JOIN $unitTableName
         ON $_tableName.unit_id = $unitTableName.id
       WHERE
@@ -244,8 +233,11 @@ Future<void> createProductTable(Database database) async {
         name VARCHAR(50)NOT NULL,
         quantity INTEGERNOT NULL,
         favorite INTEGER NOT NULL,
-        unit_id INTEGERNOT NULL,
-        FOREIGN KEY(unit_id) REFERENCES Unit(id)
+        checked INTEGER NOT NULL,
+        unit_id INTEGER NOT NULL,
+        category_id INTEGER NOT NULL,
+        FOREIGN KEY(unit_id) REFERENCES Unit(id),
+        FOREIGN KEY(category_id) REFERENCES Category(id)
       );
       """);
 }

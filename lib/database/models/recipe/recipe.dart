@@ -65,18 +65,8 @@ Future<void> createRecipeRelations(Database database) async {
         FOREIGN KEY(product_id) REFERENCES Product(id)
       );
       """);
-
-  await database.execute("""
-      CREATE TABLE RecipeCategory (
-        recipe_id INTEGER,
-        category_id INTEGER,
-        FOREIGN KEY(recipe_id) REFERENCES Recipe(id),
-        FOREIGN KEY(category_id) REFERENCES Category(id)
-      );
-      """);
 }
 
 Future<void> dropRecipeRelations(Database database) async {
   await DatabaseHelper.dropTable(database, "RecipeProduct");
-  await DatabaseHelper.dropTable(database, "RecipeCategory");
 }

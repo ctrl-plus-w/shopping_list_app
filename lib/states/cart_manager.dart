@@ -30,10 +30,7 @@ class CartManager extends ChangeNotifier {
     if (_cart != null) {
       final products = await _cart!.getProducts();
 
-      final categories = products
-          .where((p) => p.category != null)
-          .map((p) => p.category!.name)
-          .toSet();
+      final categories = products.map((p) => p.category.name).toSet();
 
       _products = products;
       _categories = categories;

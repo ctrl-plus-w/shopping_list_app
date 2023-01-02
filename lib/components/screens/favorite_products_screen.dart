@@ -49,10 +49,8 @@ class FavoriteProductsScreen extends StatelessWidget {
                           products: favoriteManager.products
                               .where(
                                 (p) =>
-                                    p.category != null &&
-                                    p.category!.name ==
-                                        favoriteManager.categories
-                                            .elementAt(index),
+                                    p.category.name ==
+                                    favoriteManager.categories.elementAt(index),
                               )
                               .map(
                                 (p) => Product(

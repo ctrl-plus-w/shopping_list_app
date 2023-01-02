@@ -20,8 +20,7 @@ class FavoriteManager extends ChangeNotifier {
     _products = await Product.getAll(favorite: true);
 
     _categories = _products
-        .where((p) => p.category != null)
-        .map((p) => p.category!.name)
+        .map((p) => p.category.name)
         .toSet();
 
     _isLoading = false;

@@ -17,7 +17,6 @@ Future<void> _onCreate(Database database, int version) async {
 
   await createProductTable(database); // ! Priority = 2
 
-  await createCategoryRelations(database); // ! Priority = 3
   await createRecipeRelations(database); // ! Priority = 3
   await createCartRelations(database); // ! Priority = 3
 
@@ -30,7 +29,6 @@ Future<void> _onUpgrade(
   int newVersion,
 ) async {
   if (oldVersion < newVersion) {
-    await dropCategoryRelations(database); // ! Priority = 1
     await dropRecipeRelations(database); // ! Priority = 1
     await dropCartRelations(database); // ! Priority = 1
 
@@ -57,7 +55,7 @@ class DatabaseHelper {
       join(await getDatabasesPath(), "shopping_list_database.db"),
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
-      version: 2,
+      version: 4,
     );
 
     return _database as Future<Database>;

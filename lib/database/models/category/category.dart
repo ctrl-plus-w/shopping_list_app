@@ -90,22 +90,6 @@ Future<void> dropCategoryTable(Database database) async {
   await DatabaseHelper.dropTable(database, _tableName);
 }
 
-Future<void> createCategoryRelations(Database database) async {
-  await database.execute("""
-      CREATE TABLE CategoryProduct (
-        checked INTEGER NOT NULL,
-        category_id INTEGER,
-        product_id INTEGER,
-        FOREIGN KEY(category_id) REFERENCES $_tableName(id),
-        FOREIGN KEY(product_id) REFERENCES Product(id)
-      );
-      """);
-}
-
-Future<void> dropCategoryRelations(Database database) async {
-  await DatabaseHelper.dropTable(database, "CategoryProduct");
-}
-
 String getTableName() {
   return _tableName;
 }

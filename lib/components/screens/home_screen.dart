@@ -111,9 +111,8 @@ class HomeScreen extends StatelessWidget {
                           products: cartManager.products
                               .where(
                                 (p) =>
-                                    p.category != null &&
-                                    p.category!.name ==
-                                        cartManager.categories.elementAt(index),
+                                    p.category.name ==
+                                    cartManager.categories.elementAt(index),
                               )
                               .map(
                                 (p) => Product(
