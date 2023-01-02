@@ -52,7 +52,9 @@ class _NewRecipePopupState extends State<NewRecipePopup> {
     });
   }
 
-  Future<void> submit() async {}
+  Future<void> submit() async {
+    // TODO : Create the recipe.
+  }
 
   @override
   Widget build(BuildContext context) {

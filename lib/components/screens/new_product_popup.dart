@@ -177,6 +177,7 @@ class _NewProductPopupState extends State<NewProductPopup> {
       unit: unit,
       favorite: isFavorite,
       category: category,
+      checked: false,
     );
 
     if (!widget.doNotAddToCart) {
