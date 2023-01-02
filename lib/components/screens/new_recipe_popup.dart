@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Models
@@ -50,6 +51,8 @@ class _NewRecipePopupState extends State<NewRecipePopup> {
       });
     });
   }
+
+  Future<void> submit() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +141,31 @@ class _NewRecipePopupState extends State<NewRecipePopup> {
                           ],
                         );
                       },
+                    ),
+
+                    const Spacer(),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: Navigator.of(context).pop,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset('assets/arrow_left.svg'),
+                              const SizedBox(width: 8),
+                              const Text('Recettes'),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) submit();
+                          },
+                          child: const Text('Créer la recette'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
