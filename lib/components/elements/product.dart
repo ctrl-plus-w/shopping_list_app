@@ -40,7 +40,10 @@ class _ProductState extends State<Product> {
   Future<void> checkProduct() async {
     final newState = !widget.product.checked;
 
-    if (await widget.product.updateCheckedState(newState)) {
+    final hasCheckedBeenUpdated =
+        await widget.product.updateCheckedState(newState);
+
+    if (hasCheckedBeenUpdated) {
       setState(() {
         widget.product.checked = newState;
       });

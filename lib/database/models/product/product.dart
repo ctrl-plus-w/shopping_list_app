@@ -106,9 +106,9 @@ class Product {
     final database = await DatabaseHelper.database;
 
     final count = await database.update(
-      "CategoryProduct",
+      _tableName,
       {"checked": state ? 1 : 0},
-      where: 'product_id = ?',
+      where: 'id = ?',
       whereArgs: [id],
     );
 
