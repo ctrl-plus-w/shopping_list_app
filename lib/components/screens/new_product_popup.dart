@@ -31,20 +31,6 @@ enum States {
   favorite,
 }
 
-class NewProductPopup extends StatefulWidget {
-  final bool skipFavoriteStep;
-  final bool doNotAddToCart;
-
-  const NewProductPopup({
-    this.skipFavoriteStep = false,
-    this.doNotAddToCart = false,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<NewProductPopup> createState() => _NewProductPopupState();
-}
-
 class NavigationAutomata {
   final States state;
   final bool skipFavoriteState;
@@ -74,6 +60,20 @@ class NavigationAutomata {
 
     return null;
   }
+}
+
+class NewProductPopup extends StatefulWidget {
+  final bool skipFavoriteStep;
+  final bool doNotAddToCart;
+
+  const NewProductPopup({
+    this.skipFavoriteStep = false,
+    this.doNotAddToCart = false,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<NewProductPopup> createState() => _NewProductPopupState();
 }
 
 class _NewProductPopupState extends State<NewProductPopup> {
