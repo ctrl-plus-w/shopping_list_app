@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shopping_list_app/components/screens/edit_product_popup.dart';
 
 // Models
 import 'package:shopping_list_app/database/models/product/product.dart'
@@ -35,7 +36,16 @@ class Product extends StatefulWidget {
 class _ProductState extends State<Product> {
   Key _key = Key(Random().nextInt(10000).toString());
 
-  Future<void> openEditPopup() async {}
+  Future<void> openEditPopup() async =>
+      Navigator.of(context).push(RawDialogRoute(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return EditProductPopup(product: widget.product);
+        },
+      ));
 
   Future<void> checkProduct() async {
     final newState = !widget.product.checked;
