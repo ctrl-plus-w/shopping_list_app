@@ -83,6 +83,25 @@ class _SearchInputState<T> extends State<SearchInput> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    /// The goal here is to IF the valueController is not empty when loading the
+    /// component, select the right element at that time.
+    ///
+    /// Whe first get that element by checking its label with the text inside
+    /// the value controller, then we set the [_selectedElementId] value with
+    /// the found element id.
+    if (widget.valueController.text.isNotEmpty) {
+      setState(() {
+        _selectedElementId = widget.getId(_filteredData.firstWhere(
+          (element) => widget.getLabel(element) == widget.valueController.text,
+        ));
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     const formInputTextStyle = TextStyle(fontSize: 16);
 
@@ -94,7 +113,7 @@ class _SearchInputState<T> extends State<SearchInput> {
         // Label
         Text(
           widget.label,
-          style: theme.textTheme.bodyText1!.copyWith(fontSize: 14),
+          style: theme.textTheme.bodyText1,
         ),
 
         // Separator
@@ -136,8 +155,9 @@ class _SearchInputState<T> extends State<SearchInput> {
             },
             decoration: InputDecoration(
               hintText: "Aucune catégorie",
-              suffixIcon: IconButton(
-                onPressed: () async {
+              suffixIconConstraints: BoxConstraints.loose(const Size(32, 32)),
+              suffixIcon: InkWell(
+                onTap: () async {
                   if (widget.formKey.currentState!.validate()) {
                     try {
                       String label = widget.controller.text;
@@ -164,7 +184,15 @@ class _SearchInputState<T> extends State<SearchInput> {
                     }
                   }
                 },
-                icon: SvgPicture.asset('assets/add.svg', width: 22),
+                child: Center(
+                  child: SizedBox(
+                    width: 18,
+                    child: SvgPicture.asset(
+                      'assets/add.svg',
+                      fit: BoxFit.scaleDown,
+                    ),
+                  ),
+                ),
               ),
             ).applyDefaults(theme.inputDecorationTheme),
           ),
