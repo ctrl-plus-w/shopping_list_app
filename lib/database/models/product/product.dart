@@ -80,6 +80,17 @@ class Product {
     return productId;
   }
 
+  Future<void> update() async {
+    final database = await DatabaseHelper.database;
+
+    await database.update(
+      _tableName,
+      toMap(),
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<void> updateQuantity(int quantity) async {
     final database = await DatabaseHelper.database;
 
