@@ -5,15 +5,59 @@ import 'package:sqflite/sqflite.dart';
 const _tableName = "Recipe";
 
 class Recipe {
-  final int id;
-  final String name;
-  final List<Product> products;
+  late int id;
+  late String name;
+  late List<Product> products;
 
   Recipe({
-    required this.id,
-    required this.name,
+    this.id = -1,
     this.products = const [],
+    required this.name,
   });
+
+  Map<String, dynamic> toMap({bool withId = false}) {
+    final map = <String, dynamic>{
+      "name": name,
+    };
+
+    if (withId) {
+      map['id'] = id;
+    }
+
+    return map;
+  }
+
+  Future<int> create() async {
+    final database = await DatabaseHelper.database;
+
+    final productId = await database.insert(
+      _tableName,
+      toMap(),
+      conflictAlgorithm: ConflictAlgorithm.fail,
+    );
+
+    return productId;
+  }
+
+  Future<void> update() async {
+    final database = await DatabaseHelper.database;
+
+    await database.update(
+      _tableName,
+      toMap(),
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> addProducts(List<Product> products) async {
+    final database = await DatabaseHelper.database;
+
+    final values = products.map((p) => "($id, ${p.id})").join(', ');
+
+    await database.rawInsert(
+        "INSERT INTO RecipeProduct(recipe_id, product_id) VALUES $values");
+  }
 
   static Future<List<Recipe>> getAll() async {
     final database = await DatabaseHelper.database;
