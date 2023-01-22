@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shopping_list_app/components/screens/new_product_popup.dart';
 import 'package:shopping_list_app/components/screens/new_recipe_popup.dart';
+import 'package:shopping_list_app/components/screens/new_recipe_product_popup.dart';
 import 'package:shopping_list_app/states/screen_manager.dart';
 
 class DockedButton extends StatefulWidget {
@@ -60,9 +61,37 @@ class _DockedButtonState extends State<DockedButton> {
         },
       );
 
+  static Route<Object?> _newRecipeProductPopupRouteBuilder(
+    BuildContext context,
+    Object? arguments,
+  ) =>
+      RawDialogRoute(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return const NewRecipeProductPopup();
+        },
+      );
+
+  void handleClick() {
+    final map = <ScreensName, Route<Object?> Function(BuildContext, Object?)>{
+      ScreensName.homeScreen: _newProductPopupRouteBuilder,
+      ScreensName.favoriteProductsScreen: _favoriteNewProductPopupRouteBuilder,
+      ScreensName.recipesScreen: _newRecipePopupRouteBuilder,
+      ScreensName.recipeScreen: _newRecipeProductPopupRouteBuilder,
+    };
+
+    if (map.keys.toList().contains(widget.screenName)) {
+      Navigator.of(context).restorablePush(map[widget.screenName]!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      onPressed: handleClick,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -91,20 +120,6 @@ class _DockedButtonState extends State<DockedButton> {
           ),
         ),
       ),
-      onPressed: () {
-        if (widget.screenName == ScreensName.homeScreen) {
-          Navigator.of(context).restorablePush(_newProductPopupRouteBuilder);
-        }
-
-        if (widget.screenName == ScreensName.favoriteProductsScreen) {
-          Navigator.of(context)
-              .restorablePush(_favoriteNewProductPopupRouteBuilder);
-        }
-
-        if (widget.screenName == ScreensName.recipesScreen) {
-          Navigator.of(context).restorablePush(_newRecipePopupRouteBuilder);
-        }
-      },
     );
   }
 }
