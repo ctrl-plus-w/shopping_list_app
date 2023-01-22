@@ -209,7 +209,7 @@ class _SearchInputState<T> extends State<SearchInput> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(3),
               border: Border.all(
-                  color: const Color.fromRGBO(187, 195, 208, 1), width: 0.2),
+                  color: const Color.fromRGBO(187, 195, 208, 1), width: 1),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.11),
@@ -242,7 +242,9 @@ class _SearchInputState<T> extends State<SearchInput> {
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 6, horizontal: 12),
+                          vertical: 6,
+                          horizontal: 12,
+                        ),
                         width: double.infinity,
                         child: Text(
                           widget.getLabel(element),
@@ -260,8 +262,8 @@ class _SearchInputState<T> extends State<SearchInput> {
                   separatorBuilder: (BuildContext context, int index) =>
                       const Divider(
                     color: Color.fromRGBO(187, 195, 208, 1),
-                    height: 0.4,
-                    thickness: 0.4,
+                    height: 1,
+                    thickness: 1,
                   ),
                   itemCount: _filteredData.length,
                 ),

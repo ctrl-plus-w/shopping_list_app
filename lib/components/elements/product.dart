@@ -78,13 +78,13 @@ class _ProductState extends State<Product> {
               border: Border.all(
                   color: const Color.fromRGBO(187, 195, 208, 1)
                       .withOpacity(opacity),
-                  width: 0.2),
+                  width: 1),
               borderRadius: const BorderRadius.all(Radius.circular(5.5)),
               boxShadow: [
                 BoxShadow(
                   blurRadius: 1.85,
                   color: const Color.fromRGBO(207, 208, 208, 0.28)
-                      .withOpacity(opacity),
+                      .withOpacity(opacity * 0.8),
                   offset: const Offset(1, 1),
                 ),
               ],
