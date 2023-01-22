@@ -50,7 +50,16 @@ class Recipe {
     );
   }
 
+  Future<void> removeProduct(Product product) async {
+    final database = await DatabaseHelper.database;
+
+    await database.delete('RecipeProduct',
+        where: 'product_id = ? AND recipe_id = ?', whereArgs: [product.id, id]);
+  }
+
   Future<void> addProducts(List<Product> products) async {
+    if (products.isEmpty) return;
+
     final database = await DatabaseHelper.database;
 
     final values = products.map((p) => "($id, ${p.id})").join(', ');

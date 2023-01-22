@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // Screens
 import 'package:shopping_list_app/components/screens/favorite_products_screen.dart';
 import 'package:shopping_list_app/components/screens/archived_lists_screen.dart';
+import 'package:shopping_list_app/components/screens/recipe_screen.dart';
 import 'package:shopping_list_app/components/screens/recipes_screen.dart';
 import 'package:shopping_list_app/components/screens/home_screen.dart';
 
@@ -11,6 +12,7 @@ enum ScreensName {
   favoriteProductsScreen,
   archivedListsScreen,
   recipesScreen,
+  recipeScreen,
 }
 
 const screens = <ScreensName, Widget>{
@@ -18,6 +20,7 @@ const screens = <ScreensName, Widget>{
   ScreensName.favoriteProductsScreen: FavoriteProductsScreen(),
   ScreensName.archivedListsScreen: ArchivedListsScreen(),
   ScreensName.recipesScreen: RecipesScreen(),
+  ScreensName.recipeScreen: RecipeScreen(),
 };
 
 class ScreenManager extends ChangeNotifier {

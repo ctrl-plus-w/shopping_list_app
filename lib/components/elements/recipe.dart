@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:shopping_list_app/database/models/cart/cart.dart';
 
+// Models
+import 'package:shopping_list_app/database/models/cart/cart.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_list_app/database/models/recipe/recipe.dart'
     as recipe_model;
+
+// Providers
 import 'package:shopping_list_app/states/cart_manager.dart';
+import 'package:shopping_list_app/states/recipe_manager.dart';
+import 'package:shopping_list_app/states/screen_manager.dart';
 
 class CustomBorder extends CustomPainter {
   @override
@@ -96,48 +101,61 @@ class _RecipeState extends State<Recipe> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Consumer<CartManager>(
-      builder: (context, cartManager, child) => CustomPaint(
-        foregroundPainter: CustomBorder(),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: const Color.fromRGBO(187, 195, 208, 1),
+    return Consumer3<ScreenManager, CartManager, RecipeManager>(
+      builder: (
+        context,
+        screenManager,
+        cartManager,
+        recipeManager,
+        child,
+      ) =>
+          GestureDetector(
+        onTap: () {
+          recipeManager.setRecipe(widget.recipe);
+          screenManager.setScreen(ScreensName.recipeScreen);
+        },
+        child: CustomPaint(
+          foregroundPainter: CustomBorder(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: const Color.fromRGBO(187, 195, 208, 1),
+              ),
             ),
-          ),
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.recipe.name, style: theme.textTheme.headline3),
-              const SizedBox(height: 12),
-              for (final product in widget.recipe.products.take(3))
-                Text(
-                    "• ${product.name} (${product.quantity} ${product.unit.name})",
-                    style: theme.textTheme.bodyText1),
-              if (widget.recipe.products.length > 3) const Text("• ..."),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Transform.translate(
-                  offset: const Offset(8, 8),
-                  child: IconButton(
-                    onPressed: () =>
-                        addRecipeToCart(cartManager.refreshProducts),
-                    icon: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromRGBO(32, 94, 187, 1),
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.recipe.name, style: theme.textTheme.headline3),
+                const SizedBox(height: 12),
+                for (final product in widget.recipe.products.take(3))
+                  Text(
+                      "• ${product.name} (${product.quantity} ${product.unit.name})",
+                      style: theme.textTheme.bodyText1),
+                if (widget.recipe.products.length > 3) const Text("• ..."),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Transform.translate(
+                    offset: const Offset(8, 8),
+                    child: IconButton(
+                      onPressed: () =>
+                          addRecipeToCart(cartManager.refreshProducts),
+                      icon: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.fromRGBO(32, 94, 187, 1),
+                        ),
+                        child: SvgPicture.asset('assets/add_white.svg'),
                       ),
-                      child: SvgPicture.asset('assets/add_white.svg'),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

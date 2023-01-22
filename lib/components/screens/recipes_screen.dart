@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// Elements
 import 'package:shopping_list_app/components/elements/recipe.dart';
 
 // States
-import 'package:shopping_list_app/states/recipe_manager.dart';
+import 'package:shopping_list_app/states/recipes_manager.dart';
 
-class RecipesScreen extends StatelessWidget {
+class RecipesScreen extends StatefulWidget {
   const RecipesScreen({Key? key}) : super(key: key);
 
+  @override
+  State<RecipesScreen> createState() => _RecipesScreenState();
+}
+
+class _RecipesScreenState extends State<RecipesScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Consumer<RecipeManager>(
-      builder: (context, recipeManager, child) {
-        if (recipeManager.isLoading) {
+    return Consumer<RecipesManager>(
+      builder: (context, recipesManager, child) {
+        if (recipesManager.isLoading) {
           return Scaffold(
             body: Container(
               padding: const EdgeInsets.all(16),
@@ -39,10 +46,11 @@ class RecipesScreen extends StatelessWidget {
                 style: theme.textTheme.subtitle1,
               ),
               ListView.builder(
-                  itemCount: recipeManager.recipes.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) =>
-                      Recipe(recipe: recipeManager.recipes[index]))
+                itemCount: recipesManager.recipes.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) =>
+                    Recipe(recipe: recipesManager.recipes[index]),
+              )
             ],
           ),
         );

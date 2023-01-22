@@ -12,7 +12,7 @@ import 'package:shopping_list_app/components/modules/popup_container.dart';
 
 // Elements
 import 'package:shopping_list_app/components/elements/custom_checkbox.dart';
-import 'package:shopping_list_app/states/recipe_manager.dart';
+import 'package:shopping_list_app/states/recipes_manager.dart';
 
 const String pagePrefPrefix = "new_recipe_page";
 getPrefPropName(String propName) => pagePrefPrefix + propName;
@@ -86,7 +86,7 @@ class _NewRecipePopupState extends State<NewRecipePopup> {
       return const SizedBox.shrink();
     }
 
-    return Consumer<RecipeManager>(
+    return Consumer<RecipesManager>(
       builder: (context, recipeManager, child) => PopupContainer(
         child: Expanded(
           child: Column(
@@ -136,10 +136,11 @@ class _NewRecipePopupState extends State<NewRecipePopup> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        "Ajouter des produits",
-                        style: theme.textTheme.bodyText1,
-                      ),
+                      if (_favoriteProducts.isNotEmpty)
+                        Text(
+                          "Ajouter des produits",
+                          style: theme.textTheme.bodyText1,
+                        ),
                       const SizedBox(height: 8),
                       ListView.separated(
                         itemCount: _favoriteProducts.length,
