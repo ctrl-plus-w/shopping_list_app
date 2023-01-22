@@ -90,7 +90,8 @@ class _NewProductPopupState extends State<NewProductPopup> {
     setState(() => _state = NavigationAutomata(state));
   }
 
-  Future<void> submit(Function refreshProducts) async {
+  Future<void> submit(
+      CartManager cartManager, FavoriteManager favoriteManager) async {
     final prefs = await SharedPreferences.getInstance();
 
     // Handling all the saved fields of the GENERAL SECTION
@@ -147,6 +148,7 @@ class _NewProductPopupState extends State<NewProductPopup> {
     if (!widget.doNotAddToCart) {
       final cart = await Cart.getOrCreateCurrent();
       await cart.addProduct(product);
+      await cartManager.refreshProducts();
     } else {
       await product.create();
     }
@@ -155,7 +157,9 @@ class _NewProductPopupState extends State<NewProductPopup> {
     prefs.clear();
 
     // Refresh the products before closing the popup
-    await refreshProducts();
+    if (product.favorite) {
+      await favoriteManager.refreshProducts();
+    }
 
     // Because the func is async, we need to check if the component is mounted before calling the Navigator.
     if (!mounted) return;
@@ -198,14 +202,14 @@ class _NewProductPopupState extends State<NewProductPopup> {
                   setPreviousState: setPreviousState,
                   skipFavoriteStep: widget.skipFavoriteStep,
                   pagePrefPrefix: pagePrefPrefix,
-                  submit: () => submit(favoriteManager.refreshProducts),
+                  submit: () => submit(cartManager, favoriteManager),
                 )
               else if (_state.state == States.favorite)
                 FavoriteStepFormCategory(
                   setNextState: setNextState,
                   setPreviousState: setPreviousState,
                   pagePrefPrefix: pagePrefPrefix,
-                  submit: () => submit(cartManager.refreshProducts),
+                  submit: () => submit(cartManager, favoriteManager),
                 ),
             ],
           ),

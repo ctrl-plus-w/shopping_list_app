@@ -18,6 +18,7 @@ import 'package:shopping_list_app/database/database.dart';
 import 'package:shopping_list_app/helpers/navigation_automata.dart';
 import 'package:shopping_list_app/database/models/unit/unit.dart';
 import 'package:shopping_list_app/helpers/preferences.dart';
+import 'package:shopping_list_app/states/favorite_manager.dart';
 import 'package:shopping_list_app/states/recipe_manager.dart';
 import 'package:shopping_list_app/states/recipes_manager.dart';
 
@@ -85,6 +86,7 @@ class _NewRecipeProductPopupState extends State<NewRecipeProductPopup> {
   Future<void> submit(
     RecipesManager recipesManager,
     RecipeManager recipeManager,
+    FavoriteManager favoriteManager,
   ) async {
     final prefs = await SharedPreferences.getInstance();
     final recipe = recipeManager.recipe;
@@ -151,6 +153,7 @@ class _NewRecipeProductPopupState extends State<NewRecipeProductPopup> {
 
     // Refresh the products (recipes and recipe) before closing the popup
     await recipesManager.refreshRecipes();
+    if (product.favorite) await favoriteManager.refreshProducts();
 
     // Because the func is async, we need to check if the component is mounted before calling the Navigator.
     if (!mounted) return;
@@ -167,9 +170,10 @@ class _NewRecipeProductPopupState extends State<NewRecipeProductPopup> {
 
     final theme = Theme.of(context);
 
-    return Consumer2<RecipesManager, RecipeManager>(
-      builder: (context, recipesManager, recipeManager, child) =>
-          PopupContainer(
+    return Consumer3<RecipesManager, RecipeManager, FavoriteManager>(
+      builder:
+          (context, recipesManager, recipeManager, favoriteManager, child) =>
+              PopupContainer(
         child: Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -202,7 +206,8 @@ class _NewRecipeProductPopupState extends State<NewRecipeProductPopup> {
                   setNextState: setNextState,
                   setPreviousState: setPreviousState,
                   pagePrefPrefix: pagePrefPrefix,
-                  submit: () => submit(recipesManager, recipeManager),
+                  submit: () =>
+                      submit(recipesManager, recipeManager, favoriteManager),
                 ),
             ],
           ),
