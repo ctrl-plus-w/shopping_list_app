@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 6),
                         SvgPicture.asset(
-                          "assets/placeholder.svg",
+                          "assets/paper_plus.svg",
                           height: 22,
                           width: 22,
                         ),
